@@ -7,9 +7,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
+
 public class FirebaseHandler {
     private static FirebaseAuth mAuth;
     private static final String TAG = "EmailPassword";
+
 
     /**
      * Initializes Firebase Authentication
@@ -28,6 +30,7 @@ public class FirebaseHandler {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         return currentUser;
     }
+
 
    /**
     public void createUser(String email, String password) {

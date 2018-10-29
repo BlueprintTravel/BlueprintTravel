@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
+
     private void updateUI(FirebaseUser currentUser) {
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
@@ -161,7 +162,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }
     }
-
 
 
     /**

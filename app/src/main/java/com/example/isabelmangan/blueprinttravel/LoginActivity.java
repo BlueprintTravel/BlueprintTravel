@@ -105,13 +105,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();//FirebaseHandler.getCurrentlySignedInUser();
-        updateUI(currentUser);
+        //updateUI(currentUser);
     }
+
+
 
     private void updateUI(FirebaseUser currentUser) {
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.

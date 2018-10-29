@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "59021469931",
+    "firebase_url": "https://blueprinttravel-1c0a2.firebaseio.com",
+    "project_id": "blueprinttravel-1c0a2",
+    "storage_bucket": "blueprinttravel-1c0a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59021469931:android:f277f507b359bb49",
+        "android_client_info": {
+          "package_name": "com.example.isabelmangan.blueprinttravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59021469931-0fe3qsfvqtot2qu7nmg9m0t77un3so4b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "f9777d99ef78f380ff66460cf3c8c823456ec398"
+          }
+        },
+        {
+          "client_id": "59021469931-vuu48v362bo9m9rk7ehfsnqan1lm8shb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWU2BCidGZK0YKaam2A5AnNNkwyDfFp8E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59021469931-vuu48v362bo9m9rk7ehfsnqan1lm8shb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,11 +18,11 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+    private static FirebaseAuth mAuth;
     @Test
     public void useAppContext() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.example.isabelmangan.blueprinttravel", appContext.getPackageName());
+        LoginActivity test = new LoginActivity();
+        test.signInUser("example@example.com", "1234567");
+        assertTrue(mAuth != null);
     }
 }

@@ -13,4 +13,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <!-- end Strings related to login -->
+    <string name="title_activity_map">Map</string>
 </resources>

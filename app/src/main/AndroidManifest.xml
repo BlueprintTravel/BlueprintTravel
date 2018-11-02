@@ -53,5 +53,7 @@
                 android:value="com.example.isabelmangan.blueprinttravel.LoginActivity" />
         </activity>
     </application>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

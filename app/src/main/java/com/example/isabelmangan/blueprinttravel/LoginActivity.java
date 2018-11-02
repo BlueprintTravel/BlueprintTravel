@@ -332,8 +332,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            // TODO: attempt authentication against a network service.
-            signInUser(mEmail, mPassword);
+            signInUser(mEmail,mPassword);
 
             // TODO: register the new account here.
             return true;

@@ -420,8 +420,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //            }
 //            Log.i("userLogIn","fail");
 
-            Log.i("userLogIn","here");
-
             signInUser(mEmail,mPassword);
             // TODO: register the new account here.
             return true;

@@ -25,12 +25,12 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_map"
+            android:exported="true">
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
         </activity>
 
         <meta-data
@@ -40,17 +40,18 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <!-- <meta-data -->
-        <!-- android:name="com.google.android.geo.API_KEY" -->
-        <!-- android:value="@string/google_maps_key"/> -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
 
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:parentActivityName=".LoginActivity">
+            android:parentActivityName=".LoginActivity"
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.isabelmangan.blueprinttravel.LoginActivity" />
+                android:value=".LoginActivity" />
         </activity>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

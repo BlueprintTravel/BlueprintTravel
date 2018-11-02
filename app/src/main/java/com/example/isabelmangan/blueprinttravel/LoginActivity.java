@@ -118,33 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //updateUI(currentUser);
     }
 
-    /**
-     * Creates user in firebase
-     * @param email users email
-     * @param password users password
-     */
-    public void createUser(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password).
-                addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
 
-                        // ...
-                    }
-                });
-    }
 
     /**
      * Logs in existing user in firebase
@@ -176,7 +150,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    public static void updateUI(FirebaseUser currentUser) {
+    public void updateUI(FirebaseUser currentUser) {
+        Intent intent = new Intent (this, MapActivity.class);
+        startActivity(intent);
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
 
@@ -296,6 +272,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -308,10 +285,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         addEmailsToAutoComplete(emails);
     }
 
+
+
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
+
+
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -321,6 +302,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setAdapter(adapter);
     }
+
 
 
     private interface ProfileQuery {
@@ -349,7 +331,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
+
             signInUser(mEmail,mPassword);
+
             // TODO: register the new account here.
             return true;
         }

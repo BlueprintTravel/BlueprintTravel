@@ -176,7 +176,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        signInUser(email, password);
+       // signInUser(email, password);
 
         boolean cancel = false;
         View focusView = null;
@@ -332,6 +332,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
 <<<<<<< HEAD
             // TODO: attempt authentication against a network service.
+            signInUser(mEmail, mPassword);
 
 //            try {
 //                // Simulate network access.

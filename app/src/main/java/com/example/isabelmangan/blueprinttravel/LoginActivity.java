@@ -49,7 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>{
 
 
     /**
@@ -152,12 +152,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * @param password
      */
     public void signInUser(String email, String password) {
-        Log.d("signInUser","enter method");
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("onComplete","enter method");
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
@@ -165,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.w(TAG, "", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
@@ -200,7 +198,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        signInUser(email, password);
 
         boolean cancel = false;
         View focusView = null;
@@ -231,6 +228,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            //signInUser(email, password);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -350,11 +348,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mPassword = password;
         }
 
-
-
         @Override
         protected Boolean doInBackground(Void... params) {
-
             signInUser(mEmail,mPassword);
             // TODO: register the new account here.
             return true;

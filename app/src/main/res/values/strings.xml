@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">BlueprintTravel</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Sign In</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_in_short">Sign In</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -15,4 +15,5 @@
     </string>
     <!-- end Strings related to login -->
     <string name="title_activity_map">Map</string>
+    <string name="title_activity_sign_up">Register</string>
 </resources>

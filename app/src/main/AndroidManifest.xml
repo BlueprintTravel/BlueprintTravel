@@ -25,12 +25,12 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_map"
+            android:exported="true">
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
         </activity>
 
         <meta-data
@@ -50,7 +50,7 @@
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.isabelmangan.blueprinttravel.LoginActivity" />
+                android:value=".LoginActivity" />
         </activity>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

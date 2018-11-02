@@ -174,10 +174,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-<<<<<<< HEAD
-       // signInUser(email, password);
-=======
->>>>>>> Progress on verifying
 
         boolean cancel = false;
         View focusView = null;

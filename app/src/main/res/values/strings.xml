@@ -18,4 +18,5 @@
     <!-- end Strings related to login -->
     <string name="title_activity_map">Map</string>
     <string name="title_activity_sign_up">Register</string>
+    <string name="title_activity_log_in">Log In</string>
 </resources>

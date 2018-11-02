@@ -276,6 +276,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -288,10 +289,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         addEmailsToAutoComplete(emails);
     }
 
+
+
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
+
+
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -301,6 +306,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setAdapter(adapter);
     }
+
 
 
     private interface ProfileQuery {
@@ -329,29 +335,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
             // TODO: attempt authentication against a network service.
             signInUser(mEmail, mPassword);
 
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-//
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
-//                    // Account exists, return true if the password matches.
-//                    Log.i("userLogIn","success");
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
-//            Log.i("userLogIn","fail");
-            
-            signInUser(mEmail,mPassword);
             // TODO: register the new account here.
             return true;
         }

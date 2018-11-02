@@ -165,12 +165,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && task.getResult() != null) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            Log.d(TAG, "lat: " + mLastKnownLocation.getLatitude() +
+                                    " long: " + mLastKnownLocation.getLongitude());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -183,6 +185,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         } catch(SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
+        Log.d(TAG, "We made it here so like whats going on?");
     }
 
     @Override

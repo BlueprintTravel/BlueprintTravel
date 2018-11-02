@@ -151,8 +151,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     public void updateUI(FirebaseUser currentUser) {
-        Intent intent = new Intent (this, MapActivity.class);
-        startActivity(intent);
+        if (currentUser != null) {
+            Intent intent = new Intent (this, MapActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent (this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
 

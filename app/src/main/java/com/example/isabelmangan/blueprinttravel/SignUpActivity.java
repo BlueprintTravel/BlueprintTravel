@@ -3,6 +3,7 @@ package com.example.isabelmangan.blueprinttravel;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -140,7 +141,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 });
     }
 
-    public static void updateUI(FirebaseUser currentUser) {
+    public void updateUI(FirebaseUser currentUser) {
+        if (currentUser != null) {
+            Intent intent = new Intent (this, MapActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent (this, SignUpActivity.class);
+            startActivity(intent);
+        }
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
 

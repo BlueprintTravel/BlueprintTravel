@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "59021469931-rnqdh4j8hhp5g95h6b661e5qca7sak6u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "1ff15a6f29667aede0ac194e33be2dd4d8ec8358"
+          }
+        },
+        {
           "client_id": "59021469931-vuu48v362bo9m9rk7ehfsnqan1lm8shb.apps.googleusercontent.com",
           "client_type": 3
         }

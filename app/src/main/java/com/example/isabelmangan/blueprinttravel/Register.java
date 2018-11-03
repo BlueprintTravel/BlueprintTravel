@@ -3,9 +3,8 @@ package com.example.isabelmangan.blueprinttravel;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -40,12 +39,10 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.Manifest.permission.READ_CONTACTS;
-
 /**
  * A login screen that offers login via email/password.
  */
-public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class Register extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
 
     /**
@@ -78,7 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_register);
         //Set up Firebase Auth
         mAuth = FirebaseHandler.getAuth();
         setupActionBar();
@@ -130,7 +127,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                            Toast.makeText(Register.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -140,7 +137,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 });
     }
 
-    public static void updateUI(FirebaseUser currentUser) {
+    public void updateUI(FirebaseUser currentUser) {
+        if (currentUser != null) {
+            Intent intent = new Intent (this, MapActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent (this, Register.class);
+            startActivity(intent);
+        }
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
 
@@ -342,7 +346,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(SignUpActivity.this,
+                new ArrayAdapter<>(Register.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);

@@ -45,7 +45,7 @@
             android:value="@string/google_maps_key"/>
 
         <activity
-            android:name=".SignUpActivity"
+            android:name=".Register"
             android:label="@string/title_activity_sign_up"
             android:parentActivityName=".LoginActivity"
             android:exported="true">

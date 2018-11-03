@@ -80,6 +80,8 @@
                 android:text="@string/title_activity_sign_up"
                 android:textStyle="bold" />
 
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

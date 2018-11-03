@@ -96,6 +96,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        Button mRegisterUserButton = (Button) findViewById(R.id.register_user_button);
+        mRegisterUserButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,Register.class));
+            }
+        });
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -119,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public void signInUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -143,7 +151,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     public void updateUI(FirebaseUser currentUser) {
-        Intent intent = new Intent (this, MapActivity.class);
+        Intent intent = new Intent (LoginActivity.this, MapActivity.class);
         startActivity(intent);
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
     }
@@ -171,7 +179,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;

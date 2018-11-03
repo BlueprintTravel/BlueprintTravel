@@ -77,6 +77,12 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/title_activity_log_in" />
 
+            <Button
+                android:id="@+id/register_user_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register" />
+
         </LinearLayout>
     </ScrollView>
 

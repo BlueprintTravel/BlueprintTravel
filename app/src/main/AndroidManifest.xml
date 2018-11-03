@@ -46,7 +46,7 @@
 
         <activity
             android:name=".Register"
-            android:label="@string/title_activity_sign_up"
+            android:label="@string/register_new_user"
             android:parentActivityName=".LoginActivity"
             android:exported="true">
             <meta-data

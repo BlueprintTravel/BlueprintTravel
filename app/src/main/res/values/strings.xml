@@ -26,5 +26,8 @@
     <string name="permission_required_toast">Location permission is required for this demo.</string>
     <string name="menu_myTrips">My Trips</string>
     <string name="menu_favorites">Favorites</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_homepage">Clear Map</string>
+    <color name="white">#FFFFFF</color>
 
 </resources>

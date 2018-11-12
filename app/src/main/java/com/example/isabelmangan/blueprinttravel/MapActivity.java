@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.Manifest;
@@ -73,9 +75,21 @@ public class MapActivity extends AppCompatActivity implements
                         // close drawer when item is tapped
                         drawerLayout.closeDrawers();
 
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        // TODO
+                        // Handle action bar actions click -- swap UI fragments
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_myTrips:
+                                //TODO: go to myTrips activity/fragment
+                                return true;
+                            case R.id.nav_favorites:
+                                //TODO: go to favorites activity/fragment
+                                return true;
+                            case R.id.nav_homepage:
+                                //TODO: clear map & return to homepage
+                                return true;
+                            case R.id.nav_logout:
+                                logoutUser();
+                                return true;
+                        }
 
                         return true;
                     }
@@ -175,5 +189,25 @@ public class MapActivity extends AppCompatActivity implements
      */
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    /**
+     * Logs out the user.
+     * */
+    private void logoutUser() {
+
+        //TODO: logout functionality connecting to database
+        //session.setLogin(false);
+
+        //db.deleteUsers();
+
+        // Launching the login activity
+        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        startActivity(intent);
+        toast.show();
+        finish();
     }
 }

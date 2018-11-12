@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -7,8 +8,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 import android.Manifest;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -30,6 +35,7 @@ public class MapActivity extends AppCompatActivity implements
      */
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final String TAG = "UpdateUI";
 
     /**
      * Flag indicating whether a requested permission has been denied after returning in
@@ -47,6 +53,14 @@ public class MapActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Button mCreateTripButton = (Button) findViewById(R.id.create_trip_button);
+        mCreateTripButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeUIToCreateTrip();
+            }
+        });
     }
 
 
@@ -132,5 +146,13 @@ public class MapActivity extends AppCompatActivity implements
      */
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+
+
+    public void changeUIToCreateTrip() {
+        Log.d(TAG, "Enter Create Trip");
+        Intent intent = new Intent (this, CreateTripActivity.class);
+        startActivity(intent);
     }
 }

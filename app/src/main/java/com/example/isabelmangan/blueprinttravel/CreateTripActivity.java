@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Button;
 import android.widget.TextView;
 import android.text.Spanned;
 import android.content.res.Resources;
@@ -42,20 +44,29 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         setContentView(R.layout.activity_create_trip);
 
 
-
-
-        // TODO: Start using the Places API.
-
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
 
-        mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
-        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
+        //mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
+        //mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
+
+        Button mNextButton = (Button) findViewById(R.id.next);
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updatePage();
+            }
+        });
 
 
+    }
+
+    public void updatePage() {
+        Intent intent = new Intent (this, CreateTripActivityScreen2.class);
+        startActivity(intent);
     }
 
     @Override
@@ -63,7 +74,10 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         // TODO: Get info about the selected place.
         Log.i(TAG, "Place: " + place.getName());//get place details here
 
+        //TODO: send place to database
+
         // Format the returned place's details and display them in the TextView.
+        /**
         mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(), place.getId(),
                 place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()));
 
@@ -73,6 +87,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         } else {
             mPlaceAttribution.setText("");
         }
+         **/
     }
 
     @Override

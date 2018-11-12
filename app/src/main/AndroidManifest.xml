@@ -60,7 +60,10 @@
             android:name=".CreateTripActivity"
             android:exported="true"
             android:label="@string/title_activity_create_trip"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateTripActivityScreen2"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -56,13 +56,14 @@ public class MapActivity extends AppCompatActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        //Customized Toolbar for menu button support
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
+        //Nav Drawer AKA Sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -70,28 +71,7 @@ public class MapActivity extends AppCompatActivity implements
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        drawerLayout.closeDrawers();
-
-                        // Handle action bar actions click -- swap UI fragments
-                        switch (menuItem.getItemId()) {
-                            case R.id.nav_myTrips:
-                                //TODO: go to myTrips activity/fragment
-                                return true;
-                            case R.id.nav_favorites:
-                                //TODO: go to favorites activity/fragment
-                                return true;
-                            case R.id.nav_homepage:
-                                //TODO: clear map & return to homepage
-                                return true;
-                            case R.id.nav_logout:
-                                logoutUser();
-                                return true;
-                        }
-
-                        return true;
+                        return navigationDrawerHandler(menuItem);
                     }
                 });
     }
@@ -106,6 +86,32 @@ public class MapActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Handles Clicks in the Navigation Drawer AKA Sidebar
+     */
+    public boolean navigationDrawerHandler(MenuItem item) {
+        // set item as selected to persist highlight
+        item.setChecked(true);
+        // close drawer when item is tapped
+        drawerLayout.closeDrawers();
+
+        // Handle action bar actions click -- swap UI fragments
+        switch (item.getItemId()) {
+            case R.id.nav_myTrips:
+                //TODO: go to myTrips activity/fragment
+                return true;
+            case R.id.nav_favorites:
+                //TODO: go to favorites activity/fragment
+                return true;
+            case R.id.nav_homepage:
+                //TODO: clear map & return to homepage
+                return true;
+            case R.id.nav_logout:
+                logoutUser();
+                return true;
+        }
+        return true;
+    }
 
     /**
      * Manipulates the map once available.

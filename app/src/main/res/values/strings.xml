@@ -49,5 +49,11 @@
         Website: %5$s
     ]]>
     </string>
+    <string name="title_activity_edit_trip">EditTripActivity</string>
+    <string name="edit_trip">Edit Trip</string>
+    <string name="add_attraction">Add Attraction</string>
+    <string name="add_restaurant">Add Restaurant</string>
+    <string name="attractions">Attractions</string>
+    <string name="restaurants">Restaurants</string>
 
 </resources>

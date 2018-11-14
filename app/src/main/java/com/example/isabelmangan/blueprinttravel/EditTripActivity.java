@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -75,6 +76,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewColors, animalNames);
         restaurantsAdapter.setClickListener(this);
         restaurantsRecyclerView.setAdapter(restaurantsAdapter);
+
+        final Button generateRouteButton = findViewById(R.id.generate_route_button);
+        generateRouteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                generateRoute();
+            }
+        });
     }
 
     /**
@@ -101,6 +109,20 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position) + " on item position " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Generates the trip's route
+     */
+    public void generateRoute() {
+        //TODO: database stuff to take lists of attractions & restaurants and generate the route
+
+        Intent intent = new Intent(this, MapActivity.class);
+        //TODO: putExtra AKA send info back to MapActivity UI: route on map, Create Trip button now Edit Trip, Name of Trip displayed
+
+        //TODO: progress bar
+        startActivity(intent);
+
     }
 
 }

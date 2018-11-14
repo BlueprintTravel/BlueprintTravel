@@ -55,5 +55,6 @@
     <string name="add_restaurant">Add Restaurant</string>
     <string name="attractions">Attractions</string>
     <string name="restaurants">Restaurants</string>
+    <string name="generate_route">Generate Route</string>
 
 </resources>

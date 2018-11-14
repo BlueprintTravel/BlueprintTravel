@@ -14,6 +14,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/edit_trip"
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +29,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:textSize="20sp"
         android:text="@string/attractions"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/add_attraction_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_trip_header" />
@@ -44,8 +46,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:textSize="20sp"
         android:text="@string/restaurants"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_restaurant_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,11 +84,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/restaurants_header"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/add_restaurant_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attractions_header"
-        android:scrollbars="horizontal" />
+        app:layout_constraintTop_toBottomOf="@+id/add_attraction_button" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurants_list"
@@ -93,14 +96,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/generate_route_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/restaurants_header"
-        android:scrollbars="horizontal" />
+        app:layout_constraintTop_toBottomOf="@+id/add_restaurant_button" />
+
+    <Button
+        android:id="@+id/generate_route_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/generate_route"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/add_restaurant_button"
+        app:layout_constraintStart_toStartOf="parent"
+        android:drawableLeft="@drawable/ic_route" />
 
 </android.support.constraint.ConstraintLayout>

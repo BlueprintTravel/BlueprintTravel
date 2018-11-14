@@ -1,18 +1,23 @@
 package com.example.isabelmangan.blueprinttravel;
 
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class EditTripActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
 
     private boolean isAttraction;
+    private LocationsRecyclerViewAdapter attractionsAdapter;
+    private LocationsRecyclerViewAdapter restaurantsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,39 @@ public class EditTripActivity extends AppCompatActivity {
             }
         });
 
+        // data to populate the RecyclerView with
+        // TODO: change from colors & animals - populate with images and placeNames
+        ArrayList<Integer> viewColors = new ArrayList<>();
+        viewColors.add(Color.BLUE);
+        viewColors.add(Color.YELLOW);
+        viewColors.add(Color.MAGENTA);
+        viewColors.add(Color.RED);
+        viewColors.add(Color.BLACK);
+
+        ArrayList<String> animalNames = new ArrayList<>();
+        animalNames.add("Horse");
+        animalNames.add("Cow");
+        animalNames.add("Camel");
+        animalNames.add("Sheep");
+        animalNames.add("Goat");
+
+        // set up the Attractions RecyclerView
+        RecyclerView attractionsRecyclerView = findViewById(R.id.attractions_list);
+        LinearLayoutManager horizontalAttrLayoutManager
+                = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        attractionsRecyclerView.setLayoutManager(horizontalAttrLayoutManager);
+        attractionsAdapter = new LocationsRecyclerViewAdapter(this, viewColors, animalNames);
+        attractionsAdapter.setClickListener(this);
+        attractionsRecyclerView.setAdapter(attractionsAdapter);
+
+        // set up the Restaurants RecyclerView
+        RecyclerView restaurantsRecyclerView = findViewById(R.id.restaurants_list);
+        LinearLayoutManager horizontalRestLayoutManager
+                = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        restaurantsRecyclerView.setLayoutManager(horizontalRestLayoutManager);
+        restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewColors, animalNames);
+        restaurantsAdapter.setClickListener(this);
+        restaurantsRecyclerView.setAdapter(restaurantsAdapter);
     }
 
     /**
@@ -58,6 +96,11 @@ public class EditTripActivity extends AppCompatActivity {
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position) + " on item position " + position, Toast.LENGTH_SHORT).show();
     }
 
 }

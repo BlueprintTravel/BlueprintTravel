@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/attractions"
+        android:id="@+id/attractions_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_trip_header" />
 
     <TextView
-        android:id="@+id/restaurants"
+        android:id="@+id/restaurants_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -49,7 +49,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_restaurant_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attractions" />
+        app:layout_constraintTop_toBottomOf="@+id/attractions_header" />
 
     <Button
         android:id="@+id/add_attraction_button"
@@ -58,7 +58,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/add_attraction"
-        app:layout_constraintBaseline_toBaselineOf="@+id/attractions"
+        app:layout_constraintBaseline_toBaselineOf="@+id/attractions_header"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -68,7 +68,39 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/add_restaurant"
-        app:layout_constraintBaseline_toBaselineOf="@+id/restaurants"
+        app:layout_constraintBaseline_toBaselineOf="@+id/restaurants_header"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/attractions_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/restaurants_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attractions_header"
+        android:scrollbars="horizontal" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/restaurants_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/restaurants_header"
+        android:scrollbars="horizontal" />
 
 </android.support.constraint.ConstraintLayout>

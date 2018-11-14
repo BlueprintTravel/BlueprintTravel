@@ -107,7 +107,9 @@
             android:layout_height="wrap_content"
             android:text="@string/short_30_min_or_less"
             tools:layout_editor_absoluteX="28dp"
-            tools:layout_editor_absoluteY="239dp" />
+            tools:layout_editor_absoluteY="239dp"
+            android:clickable="true" />
+            //android:checked="true"
 
         <RadioButton
             android:id="@+id/attraction_duration_medium_radio"
@@ -115,7 +117,8 @@
             android:layout_height="wrap_content"
             android:text="Medium (30 min to 2 hours)"
             tools:layout_editor_absoluteX="28dp"
-            tools:layout_editor_absoluteY="271dp" />
+            tools:layout_editor_absoluteY="271dp"
+            android:clickable="true" />
 
         <RadioButton
             android:id="@+id/attraction_duration_long_radio"
@@ -123,7 +126,10 @@
             android:layout_height="wrap_content"
             android:text="Long (2 hours or more)"
             tools:layout_editor_absoluteX="28dp"
-            tools:layout_editor_absoluteY="303dp" />
+            tools:layout_editor_absoluteY="303dp"
+            android:clickable="true" />
+            //android:onClick="onClick"
+
     </RadioGroup>
 
     <TextView

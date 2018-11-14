@@ -49,5 +49,6 @@
         Website: %5$s
     ]]>
     </string>
+    <string name="title_activity_add_restaurant">AddRestaurantActivity</string>
 
 </resources>

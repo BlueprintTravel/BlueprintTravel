@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
@@ -64,6 +64,11 @@
         <activity
             android:name=".CreateTripActivityScreen2"
             android:exported="true" />
+        <activity
+            android:name=".AddRestaurantActivity"
+            android:label="@string/title_activity_add_restaurant"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

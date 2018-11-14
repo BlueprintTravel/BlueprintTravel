@@ -34,6 +34,21 @@ public class AddAttractionActivity extends AppCompatActivity {
 
     private static final String TAG = "MyAttraction";
 
+    //Change color of selected button
+    private Button[] btn = new Button[3];
+    private Button btn_unfocus;
+    private int[] btn_id = {R.id.duration_short_button, R.id.duration_med_button, R.id.duration_long_button};
+
+
+    private void setFocus(Button btn_unfocus, Button btn_focus){
+        btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
+        btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
+        btn_focus.setTextColor(Color.rgb(255, 255, 255));
+        btn_focus.setBackgroundColor(Color.rgb(3, 106, 150));
+        this.btn_unfocus = btn_focus;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +56,20 @@ public class AddAttractionActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
+
+
+        //Duration button focus code
+        /**for(int i = 0; i < btn.length; i++){
+            btn[i] = (Button) findViewById(btn_id[i]);
+            btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
+            btn[i].setOnClickListener((View.OnClickListener) this);
+        }**/
+
+        btn_unfocus = btn[0];
 
 
         //Autocomplete to get the place
@@ -64,7 +91,7 @@ public class AddAttractionActivity extends AppCompatActivity {
             @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
-               // Log.i(TAG, "An error occurred: " + status);
+                Log.i(TAG, "An error occurred: " + status);
             }
         });
 
@@ -73,6 +100,7 @@ public class AddAttractionActivity extends AppCompatActivity {
         simpleSwitch.setChecked(false);
 
         //final RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
+
 
         //Add Attraction Button
         Button mAddAttractionButton = (Button) findViewById(R.id.add_attraction_button);
@@ -87,7 +115,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                 Log.d(TAG, "Required status: " + addAttraction.isReq);
 
                 //TODO: Set Duration from radio buttons
-                 RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
+                /** RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
                  rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
                     @Override
@@ -110,7 +138,25 @@ public class AddAttractionActivity extends AppCompatActivity {
                                 break;
                         }
                     }
-                });
+                });**/
+
+                //TODO: Set Duration using Buttons in Linear Layout
+                switch (view.getId()) {
+                    case R.id.duration_short_button:
+                        setFocus(btn_unfocus, btn[0]);
+                        addAttraction.duration = "short";
+                        break;
+
+                    case R.id.duration_med_button:
+                        setFocus(btn_unfocus, btn[1]);
+                        addAttraction.duration = "medium";
+                        break;
+
+                    case R.id.duration_long_button:
+                        setFocus(btn_unfocus, btn[2]);
+                        addAttraction.duration = "long";
+                        break;
+                }
 
                 //Test duration result
                 Log.d(TAG, "Duration: " + addAttraction.duration);

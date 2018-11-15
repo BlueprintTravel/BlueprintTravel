@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.common.api.Status;
@@ -29,25 +30,10 @@ public class AddAttractionActivity extends AppCompatActivity {
     public class Attraction{
         String placeid;
         Boolean isReq;
-        String duration;
+        int duration;
     }
 
     private static final String TAG = "MyAttraction";
-
-    //Change color of selected button
-    private Button[] btn = new Button[3];
-    private Button btn_unfocus;
-    private int[] btn_id = {R.id.duration_short_button, R.id.duration_med_button, R.id.duration_long_button};
-
-
-    private void setFocus(Button btn_unfocus, Button btn_focus){
-        btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
-        btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
-        btn_focus.setTextColor(Color.rgb(255, 255, 255));
-        btn_focus.setBackgroundColor(Color.rgb(3, 106, 150));
-        this.btn_unfocus = btn_focus;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +42,8 @@ public class AddAttractionActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
-
-
-        //Duration button focus code
-        /**for(int i = 0; i < btn.length; i++){
-            btn[i] = (Button) findViewById(btn_id[i]);
-            btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
-            btn[i].setOnClickListener((View.OnClickListener) this);
-        }**/
-
-        btn_unfocus = btn[0];
-
 
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -101,6 +74,10 @@ public class AddAttractionActivity extends AppCompatActivity {
 
         //final RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
 
+        final TimePicker simpleTimePicker=(TimePicker)findViewById(R.id.simpleTimePicker); // initiate a time picker
+        // set the value for current hours
+        simpleTimePicker.setIs24HourView(true); // set 24 hours mode for the time picker
+
 
         //Add Attraction Button
         Button mAddAttractionButton = (Button) findViewById(R.id.add_attraction_button);
@@ -114,49 +91,20 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //Test switch status
                 Log.d(TAG, "Required status: " + addAttraction.isReq);
 
-                //TODO: Set Duration from radio buttons
-                /** RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
-                 rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                //Get duration hours and minutes
+                int hour = simpleTimePicker.getCurrentHour();
+                int min = simpleTimePicker.getCurrentMinute();
 
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        //test checkedid
-                        Log.d(TAG, "CheckedID: " + checkedId);
+                //TODO: Calculate minutes total & set to duration for addAttraction
+                int totalMin = hour*60 + min;
+                addAttraction.duration = totalMin;
 
-                        switch (checkedId) {
-                            case R.id.attraction_duration_short_radio:
-                                // to task
-                                addAttraction.duration = "short";
-                                break;
-                            case R.id.attraction_duration_medium_radio:
-                                // to task
-                                addAttraction.duration = "medium";
-                                break;
-                            case R.id.attraction_duration_long_radio:
-                                // to task
-                                addAttraction.duration = "long";
-                                break;
-                        }
-                    }
-                });**/
+                //TESTING FOR DURATION TIMEPICKER
+                //Log.i(TAG, "HOUR: " + hour );
+                //Log.i(TAG, "MIN: " + min );
 
                 //TODO: Set Duration using Buttons in Linear Layout
-                switch (view.getId()) {
-                    case R.id.duration_short_button:
-                        setFocus(btn_unfocus, btn[0]);
-                        addAttraction.duration = "short";
-                        break;
 
-                    case R.id.duration_med_button:
-                        setFocus(btn_unfocus, btn[1]);
-                        addAttraction.duration = "medium";
-                        break;
-
-                    case R.id.duration_long_button:
-                        setFocus(btn_unfocus, btn[2]);
-                        addAttraction.duration = "long";
-                        break;
-                }
 
                 //Test duration result
                 Log.d(TAG, "Duration: " + addAttraction.duration);

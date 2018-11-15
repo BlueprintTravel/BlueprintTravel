@@ -60,6 +60,7 @@
             android:name=".AddAttractionActivity"
             android:exported="true"
             android:label="@string/title_activity_add_attraction"
+            android:parentActivityName=".EditTripActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CreateTripActivity"
@@ -84,6 +85,7 @@
             android:name=".AddRestaurantActivity"
             android:label="@string/title_activity_add_restaurant"
             android:exported="true"
+            android:parentActivityName=".EditTripActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

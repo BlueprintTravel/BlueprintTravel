@@ -97,14 +97,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         //TODO: insert Add Attraction / Restaurant Activities into new intents
 
         if (isAttrac) {
-            //Intent intent = new Intent(this, INSERTattractionCLASSHERE.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, AddAttractionActivity.class);
+            startActivity(intent);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
-            //Intent intent = new Intent(this, INSERTrestaurantCLASSHERE.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, AddRestaurantActivity.class);
+            startActivity(intent);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));

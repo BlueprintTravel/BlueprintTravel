@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -103,16 +104,15 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //Log.i(TAG, "HOUR: " + hour );
                 //Log.i(TAG, "MIN: " + min );
 
-                //TODO: Set Duration using Buttons in Linear Layout
-
 
                 //Test duration result
                 Log.d(TAG, "Duration: " + addAttraction.duration);
 
                 //TODO: send database addAttraction object
 
-                //TODO: Call edit trip activity
-                //finishActivity(key);???
+                //TODO: send info back to EditTrip
+                finish();
+
             }
         });
 

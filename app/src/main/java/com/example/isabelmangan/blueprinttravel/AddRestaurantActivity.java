@@ -60,7 +60,10 @@ public class AddRestaurantActivity extends AppCompatActivity {
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            //TODO: Send restaurant placeid to database
+                //TODO: Send restaurant placeid to database
+
+                //TODO: send info back to EditTrip
+                finish();
 
             }
         });

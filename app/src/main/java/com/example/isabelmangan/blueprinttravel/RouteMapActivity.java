@@ -1,25 +1,25 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-import android.Manifest;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -28,7 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
 //public class MapsActivity extends FragmentActivity implements
-public class MapActivity extends AppCompatActivity implements
+public class RouteMapActivity extends AppCompatActivity implements
         OnMyLocationButtonClickListener,
         OnMyLocationClickListener,
         OnMapReadyCallback,
@@ -55,7 +55,7 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_route_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -67,7 +67,7 @@ public class MapActivity extends AppCompatActivity implements
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionbar.setTitle("Homepage");
+        actionbar.setTitle("ROUTE MAP"); //TODO: map name
 
         //Nav Drawer AKA Sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -81,11 +81,11 @@ public class MapActivity extends AppCompatActivity implements
                     }
                 });
 
-        Button mCreateTripButton = (Button) findViewById(R.id.create_trip_button);
-        mCreateTripButton.setOnClickListener(new OnClickListener() {
+        Button mEditTripButton = (Button) findViewById(R.id.edit_trip_button);
+        mEditTripButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeUIToCreateTrip();
+                changeUIToEditTrip();
             }
         });
     }
@@ -118,6 +118,8 @@ public class MapActivity extends AppCompatActivity implements
                 //TODO: go to favorites activity/fragment
                 return true;
             case R.id.nav_homepage:
+                Intent intent = new Intent (this, MapActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.nav_logout:
                 logoutUser();
@@ -138,9 +140,10 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        enableMyLocation();
+
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        enableMyLocation();
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
@@ -160,7 +163,6 @@ public class MapActivity extends AppCompatActivity implements
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
     }
 
@@ -221,7 +223,7 @@ public class MapActivity extends AppCompatActivity implements
         //db.deleteUsers();
 
         // Launching the login activity
-        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
+        Intent intent = new Intent(RouteMapActivity.this, LoginActivity.class);
         Toast toast = Toast.makeText(getApplicationContext(),
                 "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
@@ -230,9 +232,9 @@ public class MapActivity extends AppCompatActivity implements
         finish();
     }
 
-    public void changeUIToCreateTrip() {
-        Log.d(TAG, "Enter Create Trip");
-        Intent intent = new Intent (this, CreateTripActivity.class);
+    public void changeUIToEditTrip() {
+        Log.d(TAG, "Enter Edit Trip");
+        Intent intent = new Intent (this, EditTripActivity.class);
         startActivity(intent);
     }
 }

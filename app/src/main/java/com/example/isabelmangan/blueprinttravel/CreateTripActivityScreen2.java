@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +36,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
     public void updatePage() {
         Log.d(TAG, "trip name: " + tripName);
-        //TODO: intent to to next page- edit trip when created
+        Intent intent = new Intent (this, EditTripActivity.class);
+        startActivity(intent);
     }
 }

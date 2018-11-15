@@ -31,7 +31,7 @@
     <string name="menu_myTrips">My Trips</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_logout">Logout</string>
-    <string name="menu_homepage">Clear Map</string>
+    <string name="menu_homepage">Homepage</string>
     <color name="white">#FFFFFF</color>
     <string name="title_activity_create_trip">CreateTripActivity</string>
     <string name="next_button">Next</string>
@@ -51,6 +51,13 @@
         Website: %5$s
     ]]>
     </string>
+    <string name="title_activity_edit_trip">EditTripActivity</string>
+    <string name="edit_trip">Edit Trip</string>
+    <string name="add_attraction">Add Attraction</string>
+    <string name="add_restaurant">Add Restaurant</string>
+    <string name="attractions">Attractions</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="generate_route">Generate Route</string>
     <string name="title_activity_add_restaurant">AddRestaurantActivity</string>
 
 </resources>

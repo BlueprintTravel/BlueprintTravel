@@ -28,7 +28,7 @@
         <activity
             android:name=".MapActivity"
             android:exported="true"
-            android:label="@string/title_activity_map">
+            android:label="@string/title_activity_map"
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -65,10 +65,21 @@
             android:name=".CreateTripActivity"
             android:exported="true"
             android:label="@string/title_activity_create_trip"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MapActivity"/>
         <activity
             android:name=".CreateTripActivityScreen2"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".CreateTripActivity"/>
+        <activity
+            android:name=".EditTripActivity"
+            android:label="@string/title_activity_edit_trip"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".RouteMapActivity"
+            android:exported="true"
+            android:parentActivityName=".EditTripActivity"></activity>
         <activity
             android:name=".AddRestaurantActivity"
             android:label="@string/title_activity_add_restaurant"

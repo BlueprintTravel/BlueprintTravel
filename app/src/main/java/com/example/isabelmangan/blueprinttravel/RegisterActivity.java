@@ -123,6 +123,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            addUserToFirestore(user);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -135,6 +136,13 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                         // ...
                     }
                 });
+
+    }
+
+    public void addUserToFirestore(FirebaseUser user){
+        FirebaseHandler.setUpFirestore();
+        FirebaseHandler.addUser(user.getUid());
+
     }
 
     public void updateUI(FirebaseUser currentUser) {

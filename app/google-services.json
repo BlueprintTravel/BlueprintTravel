@@ -31,13 +31,29 @@
           }
         },
         {
+          "client_id": "59021469931-0cfhndnt0l8opm2fbll80hjj455op1a0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "93570c5ba3db5901015d20b08793ed679065bd3d"
+          }
+        },
+        {
+          "client_id": "59021469931-ruuufhmrn0rktqsmv01ptab9duvrupe2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "dbafbef1b61dc2b955fbebc34f1ae543875e363a"
+          }
+        },
+        {
           "client_id": "59021469931-vuu48v362bo9m9rk7ehfsnqan1lm8shb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCWU2BCidGZK0YKaam2A5AnNNkwyDfFp8E"
+          "current_key": "AIzaSyBVt2rQtFS9XUiiWjBl6Pop-VQTfn9e6jk"
         }
       ],
       "services": {

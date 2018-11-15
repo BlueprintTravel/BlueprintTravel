@@ -114,7 +114,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void registerUser() {
         Intent intent = new Intent (this, Register.class);
         startActivity(intent);
-
     }
 
 
@@ -353,7 +352,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             signInUser(mEmail,mPassword);
 
             try{
-                Thread.sleep(2000);
+                Thread.sleep(5000);
             } catch (InterruptedException e){
                 return false;
             }

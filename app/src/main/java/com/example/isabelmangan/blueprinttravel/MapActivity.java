@@ -1,14 +1,25 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 import android.Manifest;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -30,6 +41,7 @@ public class MapActivity extends AppCompatActivity implements
      */
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final String TAG = "UpdateUI";
 
     /**
      * Flag indicating whether a requested permission has been denied after returning in
@@ -38,6 +50,7 @@ public class MapActivity extends AppCompatActivity implements
     private boolean mPermissionDenied = false;
 
     private GoogleMap mMap;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +60,71 @@ public class MapActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //Customized Toolbar for menu button support
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        //Nav Drawer AKA Sidebar
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        return navigationDrawerHandler(menuItem);
+                    }
+                });
+
+        Button mCreateTripButton = (Button) findViewById(R.id.create_trip_button);
+        mCreateTripButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeUIToCreateTrip();
+            }
+        });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Handles Clicks in the Navigation Drawer AKA Sidebar
+     */
+    public boolean navigationDrawerHandler(MenuItem item) {
+        // set item as selected to persist highlight
+        item.setChecked(true);
+        // close drawer when item is tapped
+        drawerLayout.closeDrawers();
+
+        // Handle action bar actions click -- swap UI fragments
+        switch (item.getItemId()) {
+            case R.id.nav_myTrips:
+                //TODO: go to myTrips activity/fragment
+                return true;
+            case R.id.nav_favorites:
+                //TODO: go to favorites activity/fragment
+                return true;
+            case R.id.nav_homepage:
+                //TODO: clear map & return to homepage
+                return true;
+            case R.id.nav_logout:
+                logoutUser();
+                return true;
+        }
+        return true;
+    }
 
     /**
      * Manipulates the map once available.
@@ -132,5 +208,31 @@ public class MapActivity extends AppCompatActivity implements
      */
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    /**
+     * Logs out the user.
+     * */
+    private void logoutUser() {
+
+        //TODO: logout functionality connecting to database
+        //session.setLogin(false);
+
+        //db.deleteUsers();
+
+        // Launching the login activity
+        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        startActivity(intent);
+        toast.show();
+        finish();
+    }
+
+    public void changeUIToCreateTrip() {
+        Log.d(TAG, "Enter Create Trip");
+        Intent intent = new Intent (this, CreateTripActivity.class);
+        startActivity(intent);
     }
 }

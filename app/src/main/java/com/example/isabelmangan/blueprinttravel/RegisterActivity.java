@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class Register extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
 
     /**
@@ -78,7 +78,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         setContentView(R.layout.activity_register);
         //Set up Firebase Auth
         mAuth = FirebaseHandler.getAuth();
-        setupActionBar();
+        //setupActionBar();
         // Set up the sign up form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         //populateAutoComplete();
@@ -127,7 +127,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(Register.this, "Authentication failed.",
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -142,7 +142,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             Intent intent = new Intent (this, MapActivity.class);
             startActivity(intent);
         } else {
-            Intent intent = new Intent (this, Register.class);
+            Intent intent = new Intent (this, RegisterActivity.class);
             startActivity(intent);
         }
         //TODO: frontend- create updateUI method to go to home page for currently signed in user.
@@ -155,7 +155,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // Show the Up button in the action bar.
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -301,7 +301,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(Register.this,
+                new ArrayAdapter<>(RegisterActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);

@@ -47,46 +47,43 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".Register"
-            android:exported="true"
-            android:label="@string/register_new_user"
-            android:parentActivityName=".LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
-        </activity>
+
         <activity
             android:name=".AddAttractionActivity"
             android:exported="true"
             android:label="@string/title_activity_add_attraction"
             android:parentActivityName=".EditTripActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CreateTripActivity"
             android:exported="true"
             android:label="@string/title_activity_create_trip"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MapActivity"/>
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CreateTripActivityScreen2"
             android:exported="true"
-            android:parentActivityName=".CreateTripActivity"/>
+            android:parentActivityName=".CreateTripActivity" />
         <activity
             android:name=".EditTripActivity"
-            android:label="@string/title_activity_edit_trip"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:label="@string/title_activity_edit_trip"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RouteMapActivity"
             android:exported="true"
-            android:parentActivityName=".EditTripActivity"></activity>
+            android:parentActivityName=".EditTripActivity" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:parentActivityName=".LoginActivity" />
         <activity
             android:name=".AddRestaurantActivity"
-            android:label="@string/title_activity_add_restaurant"
             android:exported="true"
+            android:label="@string/title_activity_add_restaurant"
             android:parentActivityName=".EditTripActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 
 </manifest>

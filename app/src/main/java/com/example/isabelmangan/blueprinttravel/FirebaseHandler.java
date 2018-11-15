@@ -11,6 +11,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+
+
+
 
 public class FirebaseHandler {
     private static FirebaseAuth mAuth;
@@ -32,7 +37,7 @@ public class FirebaseHandler {
      * @return current user
      */
     public static FirebaseUser getCurrentlySignedInUser(){
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         return currentUser;
     }
 

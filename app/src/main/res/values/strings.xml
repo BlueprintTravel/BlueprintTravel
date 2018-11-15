@@ -29,7 +29,7 @@
     <string name="menu_myTrips">My Trips</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_logout">Logout</string>
-    <string name="menu_homepage">Clear Map</string>
+    <string name="menu_homepage">Homepage</string>
     <color name="white">#FFFFFF</color>
     <string name="title_activity_create_trip">CreateTripActivity</string>
     <string name="next_button">Next</string>

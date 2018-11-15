@@ -19,6 +19,12 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private boolean isAttraction;
     private LocationsRecyclerViewAdapter attractionsAdapter;
     private LocationsRecyclerViewAdapter restaurantsAdapter;
+    //TODO: make public?
+    private ArrayList<Integer> viewAttrImagesList = new ArrayList<>();
+    private ArrayList<String> attractionNamesList = new ArrayList<>();
+    private ArrayList<Integer> viewRestImagesList = new ArrayList<>(); //TODO
+    private ArrayList<String> restaurantNamesList = new ArrayList<>(); //TODO
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,27 +50,26 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         });
 
         // data to populate the RecyclerView with
-        // TODO: change from colors & animals - populate with images and placeNames
-        ArrayList<Integer> viewColors = new ArrayList<>();
-        viewColors.add(Color.BLUE);
-        viewColors.add(Color.YELLOW);
-        viewColors.add(Color.MAGENTA);
-        viewColors.add(Color.RED);
-        viewColors.add(Color.BLACK);
+        // TODO: delete colors & animals lol - populate with images and placeNames in better location
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.YELLOW);
+        viewAttrImagesList.add(Color.MAGENTA);
+        viewAttrImagesList.add(Color.RED);
+        viewAttrImagesList.add(Color.BLACK);
 
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
+        attractionNamesList.add("Horse");
+        attractionNamesList.add("Cow");
+        attractionNamesList.add("Camel");
+        attractionNamesList.add("Sheep");
+        attractionNamesList.add("Goat");
 
+        //TODO: format better
         // set up the Attractions RecyclerView
         RecyclerView attractionsRecyclerView = findViewById(R.id.attractions_list);
         LinearLayoutManager horizontalAttrLayoutManager
                 = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
         attractionsRecyclerView.setLayoutManager(horizontalAttrLayoutManager);
-        attractionsAdapter = new LocationsRecyclerViewAdapter(this, viewColors, animalNames);
+        attractionsAdapter = new LocationsRecyclerViewAdapter(this, viewAttrImagesList, attractionNamesList);
         attractionsAdapter.setClickListener(this);
         attractionsRecyclerView.setAdapter(attractionsAdapter);
 
@@ -73,7 +78,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         LinearLayoutManager horizontalRestLayoutManager
                 = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
         restaurantsRecyclerView.setLayoutManager(horizontalRestLayoutManager);
-        restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewColors, animalNames);
+        restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewAttrImagesList, attractionNamesList);
         restaurantsAdapter.setClickListener(this);
         restaurantsRecyclerView.setAdapter(restaurantsAdapter);
 
@@ -108,7 +113,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position) + " on item position " + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
+                + " on item position " + position, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -117,7 +123,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     public void generateRoute() {
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
 
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, RouteMapActivity.class);
         //TODO: putExtra AKA send info back to MapActivity UI: route on map, Create Trip button now Edit Trip, Name of Trip displayed
 
         //TODO: progress bar

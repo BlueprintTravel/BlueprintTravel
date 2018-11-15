@@ -57,6 +57,11 @@
                 android:value=".LoginActivity" />
         </activity>
         <activity
+            android:name=".AddAttractionActivity"
+            android:exported="true"
+            android:label="@string/title_activity_add_attraction"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".CreateTripActivity"
             android:exported="true"
             android:label="@string/title_activity_create_trip"
@@ -74,8 +79,12 @@
         <activity
             android:name=".RouteMapActivity"
             android:exported="true"
-            android:parentActivityName=".EditTripActivity">
-        </activity>
+            android:parentActivityName=".EditTripActivity"></activity>
+        <activity
+            android:name=".AddRestaurantActivity"
+            android:label="@string/title_activity_add_restaurant"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

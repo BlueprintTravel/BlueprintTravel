@@ -24,6 +24,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private ArrayList<String> attractionNamesList = new ArrayList<>();
     private ArrayList<Integer> viewRestImagesList = new ArrayList<>(); //TODO
     private ArrayList<String> restaurantNamesList = new ArrayList<>(); //TODO
+    private ArrayList<AddAttractionActivity.Attraction> attractions = new ArrayList<>();
 
 
     @Override
@@ -32,6 +33,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         setContentView(R.layout.activity_edit_trip);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /**
+        AddAttractionActivity.Attraction attraction = new AddAttractionActivity.Attraction();
+        if (attraction.getPlaceID() != null) {
+
+        }
+         **/
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {

@@ -24,14 +24,43 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class AddAttractionActivity extends AppCompatActivity {
 
     public class Attraction{
-        String placeid;
+        String placeID;
+        LatLng placeLatLng;
         Boolean isReq;
         int duration;
+
+        public Attraction() {
+
+        }
+        public Attraction(LatLng placeLatLng, String placeID, int duration) {
+            setLatLng(placeLatLng);
+            setPlaceID(placeID);
+            setDuration(duration);
+        }
+        public void setLatLng(LatLng latLng) {
+            this.placeLatLng = latLng;
+        }
+        public void setPlaceID(String placeID) {
+            this.placeID = placeID;
+        }
+        public void setDuration(int duration) {
+            this.duration = duration;
+        }
+        public LatLng getLatLng() {
+            return placeLatLng;
+        }
+        public String getPlaceID() {
+            return placeID;
+        }
+        public int getDuration() {
+            return duration;
+        }
     }
 
     private static final String TAG = "MyAttraction";
@@ -56,10 +85,12 @@ public class AddAttractionActivity extends AppCompatActivity {
                 // TODO: Get info about the selected place.
                Log.i(TAG, "Place: " + place.getName());
                 //update attraction object with placeid
-                addAttraction.placeid = place.getId();
+                addAttraction.placeID = place.getId();
+                addAttraction.placeLatLng = place.getLatLng();
+
 
                 //Test placeid is correct
-                Log.d(TAG, "Place ID: " + addAttraction.placeid);
+                Log.d(TAG, "Place ID: " + addAttraction.placeID);
             }
 
             @Override

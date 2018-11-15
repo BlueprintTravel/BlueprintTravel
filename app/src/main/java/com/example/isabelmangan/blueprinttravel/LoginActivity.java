@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void registerUser() {
-        Intent intent = new Intent (this, Register.class);
+        Intent intent = new Intent (this, RegisterActivity.class);
         startActivity(intent);
     }
 

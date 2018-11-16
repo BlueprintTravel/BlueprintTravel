@@ -22,7 +22,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -31,6 +33,7 @@ public class FirebaseHandler {
     private static final String TAG = "EmailPassword";
 
     private static FirebaseFirestore db;
+    private static String tripID;
 
     public static void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
@@ -79,6 +82,39 @@ public class FirebaseHandler {
     }
 
 
+    public static void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
+        setUpFirestore();
+        String userid = getCurrentlySignedInUser().getUid();
+        db.collection("users").document(userid).collection("trips")
+                .document(tripID).collection("locations");
+        for (int i = 0; i < attractions.size(); i++) {
+            GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
+
+            Map<String, Object> newLocation = new HashMap<>();
+            newLocation.put("locationName", attractions.get(i).placeName);
+            newLocation.put("duration", attractions.get(i).duration);
+            newLocation.put("placeID", attractions.get(i).placeID);
+            newLocation.put("isRequired", attractions.get(i).isReq);
+            newLocation.put("LatLng", geoPoint);
+            db.collection("users").document(userid).collection("trips")
+                    .document(tripID).collection("locations").
+                    add(newLocation).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    tripID = documentReference.getId();
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+        }
+
+    }
+
 
     public static void addTrip(String userid, String tripName, String LocationName, LatLng LocationLatLng){
 
@@ -102,6 +138,7 @@ public class FirebaseHandler {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        tripID = documentReference.getId();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

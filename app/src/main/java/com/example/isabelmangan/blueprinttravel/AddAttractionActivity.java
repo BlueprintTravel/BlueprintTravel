@@ -108,7 +108,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //Test duration result
                 Log.d(TAG, "Duration: " + addAttraction.duration);
 
-                //TODO: send database addAttraction object
+
 
                 //TODO: send info back to EditTrip
                 //Attraction attr = new Attraction(addAttraction.placeLatLng, addAttraction.placeID,

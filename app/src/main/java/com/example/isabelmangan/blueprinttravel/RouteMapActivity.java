@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -66,6 +67,10 @@ public class RouteMapActivity extends AppCompatActivity implements
     private GoogleMap mMap;
     private DrawerLayout drawerLayout;
 
+    private static String location;
+    private static String tripName;
+    private static LatLng latlng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +107,12 @@ public class RouteMapActivity extends AppCompatActivity implements
                 changeUIToEditTrip();
             }
         });
+
+        location= getIntent().getStringExtra("TRIP_LOCATION");
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+
+        Bundle bundle = getIntent().getParcelableExtra("bundle");
+        latlng = bundle.getParcelable("TRIP_LATLNG");
     }
 
     @Override
@@ -315,7 +326,13 @@ public class RouteMapActivity extends AppCompatActivity implements
 
     public void changeUIToEditTrip() {
         Log.d(TAG, "Enter Edit Trip");
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", latlng);
         Intent intent = new Intent (this, EditTripActivity.class);
+        intent.putExtra("TRIP_LOCATION", location);
+        intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("bundle", args);
+
         startActivity(intent);
     }
 }

@@ -13,8 +13,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
 
@@ -29,6 +33,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private ArrayList<Attraction> attractions = new ArrayList<>();
 
 
+    String userID;
+    String location;
+    String tripName;
+    LatLng latlng;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +50,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
+        FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
+        userID = currUser.getUid();
+        location= getIntent().getStringExtra("TRIP_LOCATION");
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+
+        Bundle bundle = getIntent().getParcelableExtra("bundle");
+        latlng = bundle.getParcelable("TRIP_LATLNG");
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -151,15 +166,28 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
      */
     public void generateRoute() {
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
+        GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);
+
+        Map<String, Object> newTrip = new HashMap<>();
+        newTrip.put("tripName", tripName);
+        newTrip.put("locationName", location);
+        newTrip.put("LocationLatLng", geoPoint);
+
+        FirebaseHandler.addAttractions(attractions, newTrip);
         for (int i = 0; i < attractions.size(); i++) {
             Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
             + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng
             + " duration is " + attractions.get(i).duration);
         }
 
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", latlng);
 
         Intent intent = new Intent(this, RouteMapActivity.class);
-        //TODO: putExtra AKA send info back to MapActivity UI: route on map, Create Trip button now Edit Trip, Name of Trip displayed
+        intent.putExtra("TRIP_LOCATION", location);
+        intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("bundle", args);
+
 
         //TODO: progress bar
         startActivity(intent);

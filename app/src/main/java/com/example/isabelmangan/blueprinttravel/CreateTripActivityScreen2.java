@@ -18,6 +18,9 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
     private String tripName;
     private static final String TAG = "tripNameSuccessful";
 
+    String userID;
+    String location;
+    LatLng latlng;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +38,11 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
                 //TODO: trip name to database
                 FirebaseHandler.setUpFirestore();
                 FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
-                String userID = currUser.getUid();
-                String location= getIntent().getStringExtra("TRIP_LOCATION");
+                userID = currUser.getUid();
+                location= getIntent().getStringExtra("TRIP_LOCATION");
 
                 Bundle bundle = getIntent().getParcelableExtra("bundle");
-                LatLng latlng = bundle.getParcelable("TRIP_LATLNG");
+                latlng = bundle.getParcelable("TRIP_LATLNG");
                 Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
                 FirebaseHandler.addTrip(userID, tripName, location, latlng);
                 updatePage();
@@ -49,7 +52,13 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
     public void updatePage() {
         Log.d(TAG, "trip name: " + tripName);
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", latlng);
+
         Intent intent = new Intent (this, EditTripActivity.class);
+        intent.putExtra("TRIP_LOCATION", location);
+        intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("bundle", args);
         startActivity(intent);
     }
 }

@@ -15,17 +15,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
 
 
 public class FirebaseHandler {
@@ -34,6 +39,7 @@ public class FirebaseHandler {
 
     private static FirebaseFirestore db;
     private static String tripID;
+    private static String userRef = "";
 
     public static void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
@@ -58,19 +64,25 @@ public class FirebaseHandler {
         return currentUser;
     }
 
-    public static void addUser(String userID) {
+    public static void addUser() {
+
+        setUpFirestore();
+        //String userID = getCurrentlySignedInUser().getUid();
         // Create a new user with a first and last name
-        Map<String, Object> userid = new HashMap<>();
-        userid.put("userID", userID);
+        Map<String, Object> userID = new HashMap<>();
+        userID.put("userID", getCurrentlySignedInUser().getUid());
+        userID.put("userEmail", getCurrentlySignedInUser().getEmail());
 
 
         // Add a new document with a generated ID
-        db.collection("users")
-                .add(userid)
+
+        db.collection("users").add(userID)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        userRef = documentReference.getId();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -79,24 +91,26 @@ public class FirebaseHandler {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
+
     }
+
 
 
     public static void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
-        db.collection("users").document(userid).collection("trips")
+        db.collection("users").document(userRef).collection("trips")
                 .document(tripID).collection("locations");
         for (int i = 0; i < attractions.size(); i++) {
             GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
-
+            Attraction currentPlace = attractions.get(i);
             Map<String, Object> newLocation = new HashMap<>();
             newLocation.put("locationName", attractions.get(i).placeName);
             newLocation.put("duration", attractions.get(i).duration);
             newLocation.put("placeID", attractions.get(i).placeID);
             newLocation.put("isRequired", attractions.get(i).isReq);
             newLocation.put("LatLng", geoPoint);
-            db.collection("users").document(userid).collection("trips")
+            db.collection("users").document(userRef).collection("trips")
                     .document(tripID).collection("locations").
                     add(newLocation).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
@@ -116,7 +130,10 @@ public class FirebaseHandler {
     }
 
 
-    public static void addTrip(String userid, String tripName, String LocationName, LatLng LocationLatLng){
+
+    public static void addTrip(String tripName, String LocationName, LatLng LocationLatLng){
+
+        FirebaseHandler.setUpFirestore();
 
         Double tripLat = LocationLatLng.latitude;
         Double tripLng = LocationLatLng.longitude;
@@ -130,9 +147,10 @@ public class FirebaseHandler {
         newTrip.put("LocationLatLng", geoPoint);
 
 
-        db.collection("users").document(userid).collection("trips");
 
-        db.collection("users").document(userid)
+        db.collection("users").document(userRef).collection("trips");
+
+        db.collection("users").document(userRef)
                 .collection("trips").add(newTrip)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

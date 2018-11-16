@@ -36,7 +36,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
             public void onClick(View view) {
                 tripName = mTripName.getText().toString();
                 //TODO: trip name to database
-                FirebaseHandler.setUpFirestore();
+                //FirebaseHandler.setUpFirestore();
                 FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
                 userID = currUser.getUid();
                 location= getIntent().getStringExtra("TRIP_LOCATION");
@@ -44,7 +44,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
                 Bundle bundle = getIntent().getParcelableExtra("bundle");
                 latlng = bundle.getParcelable("TRIP_LATLNG");
                 Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
-                FirebaseHandler.addTrip(userID, tripName, location, latlng);
+                FirebaseHandler.addTrip(tripName, location, latlng);
                 updatePage();
             }
         });

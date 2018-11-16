@@ -141,7 +141,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
     public void addUserToFirestore(FirebaseUser user){
         FirebaseHandler.setUpFirestore();
-        FirebaseHandler.addUser(user.getUid());
+        FirebaseHandler.addUser();
 
     }
 

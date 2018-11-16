@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseUser;
+
 public class CreateTripActivityScreen2 extends AppCompatActivity {
 
     private AutoCompleteTextView mTripName;
@@ -21,6 +24,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
         setContentView(R.layout.activity_create_trip_screen2);
 
         mTripName = findViewById(R.id.tripName);
+        FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
 
 
         Button mNextButton = (Button) findViewById(R.id.next);
@@ -29,6 +33,15 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
             public void onClick(View view) {
                 tripName = mTripName.getText().toString();
                 //TODO: trip name to database
+                FirebaseHandler.setUpFirestore();
+                FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
+                String userID = currUser.getUid();
+                String location= getIntent().getStringExtra("TRIP_LOCATION");
+
+                Bundle bundle = getIntent().getParcelableExtra("bundle");
+                LatLng latlng = bundle.getParcelable("TRIP_LATLNG");
+                Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
+                FirebaseHandler.addTrip(userID, tripName, location, latlng);
                 updatePage();
             }
         });

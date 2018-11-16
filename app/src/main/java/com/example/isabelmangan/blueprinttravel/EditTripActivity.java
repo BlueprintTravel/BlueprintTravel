@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
@@ -24,7 +26,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private ArrayList<String> attractionNamesList = new ArrayList<>();
     private ArrayList<Integer> viewRestImagesList = new ArrayList<>(); //TODO
     private ArrayList<String> restaurantNamesList = new ArrayList<>(); //TODO
-    private ArrayList<AddAttractionActivity.Attraction> attractions = new ArrayList<>();
+    private ArrayList<Attraction> attractions = new ArrayList<>();
 
 
     @Override
@@ -98,6 +100,25 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            String placeID = data.getStringExtra("placeID");
+            double placeLat = data.getDoubleExtra("placeLat", 0);
+            double placeLng = data.getDoubleExtra("placeLng", 0);
+            int duration = data.getIntExtra("duration", 0);
+
+            String placeName = data.getStringExtra("placeName");
+
+            LatLng placeLatLng = new LatLng(placeLat, placeLng);
+
+            Attraction attraction =
+                    new Attraction(placeLatLng, placeID, duration, placeName);
+            attractions.add(attraction);
+
+        }
+    }
+
     /**
      * Update UI to Add Attraction OR Add Restaurant Activity
      */
@@ -106,13 +127,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 2);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
@@ -130,6 +151,12 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
      */
     public void generateRoute() {
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
+        for (int i = 0; i < attractions.size(); i++) {
+            Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
+            + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng
+            + " duration is " + attractions.get(i).duration);
+        }
+
 
         Intent intent = new Intent(this, RouteMapActivity.class);
         //TODO: putExtra AKA send info back to MapActivity UI: route on map, Create Trip button now Edit Trip, Name of Trip displayed

@@ -3,6 +3,7 @@ package com.example.isabelmangan.blueprinttravel;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,16 +22,29 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
-//public class MapsActivity extends FragmentActivity implements
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class RouteMapActivity extends AppCompatActivity implements
         OnMyLocationButtonClickListener,
-        OnMyLocationClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -142,13 +156,85 @@ public class RouteMapActivity extends AppCompatActivity implements
         mMap = googleMap;
 
         mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //Define list to get all latlng for the route
+        List<LatLng> path = new ArrayList();
+
+        //Execute Directions API request
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
+                .build();
+
+        List<String> myplaces = new ArrayList();
+        myplaces.add("43.0744405,-89.3842855");
+        myplaces.add("43.0755516,-89.4042859");
+        myplaces.add("43.0780515,-89.4109526");
+        //TODO: Remove the hardcoded myplaces elements above and replace with the places retrieved from EditTrip or from the database
+
+        // TODO: Remove the hardcoded stuff below and replace with a list and a loop to display the markers on the map
+        LatLng capitol = new LatLng(43.0744405,-89.3842855);
+        mMap.addMarker(new MarkerOptions().position(capitol));
+        LatLng bascom = new LatLng(43.0755516,-89.4042859);
+        mMap.addMarker(new MarkerOptions().position(bascom));
+        LatLng tripp = new LatLng(43.0780515,-89.4109526);
+        mMap.addMarker(new MarkerOptions().position(tripp));
+
+        for(int p = 0; p < myplaces.size()-1; p++) {
+            DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1));
+            try {
+                DirectionsResult res = req.await();
+
+                //Loop through legs and steps to get encoded polylines of each step
+                if (res.routes != null && res.routes.length > 0) {
+                    DirectionsRoute route = res.routes[0];
+
+                    if (route.legs !=null) {
+                        for(int i=0; i<route.legs.length; i++) {
+                            DirectionsLeg leg = route.legs[i];
+                            if (leg.steps != null) {
+                                for (int j=0; j<leg.steps.length;j++){
+                                    DirectionsStep step = leg.steps[j];
+                                    if (step.steps != null && step.steps.length >0) {
+                                        for (int k=0; k<step.steps.length;k++){
+                                            DirectionsStep step1 = step.steps[k];
+                                            EncodedPolyline points1 = step1.polyline;
+                                            if (points1 != null) {
+                                                //Decode polyline and add points to list of route coordinates
+                                                List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
+                                                for (com.google.maps.model.LatLng coord1 : coords1) {
+                                                    path.add(new LatLng(coord1.lat, coord1.lng));
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        EncodedPolyline points = step.polyline;
+                                        if (points != null) {
+                                            //Decode polyline and add points to list of route coordinates
+                                            List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                            for (com.google.maps.model.LatLng coord : coords) {
+                                                path.add(new LatLng(coord.lat, coord.lng));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception ex) {
+                Log.e(TAG, ex.getLocalizedMessage());
+            }
+        }
+
+        //Draw the polyline
+        if (path.size() > 0) {
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+            mMap.addPolyline(opts);
+        }
+
+        //TODO: replace capitol with the first myplaces element
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(capitol, 6));
     }
 
     /**
@@ -172,11 +258,6 @@ public class RouteMapActivity extends AppCompatActivity implements
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
     @Override

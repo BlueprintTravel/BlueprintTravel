@@ -59,5 +59,6 @@
     <string name="restaurants">Restaurants</string>
     <string name="generate_route">Generate Route</string>
     <string name="title_activity_add_restaurant">AddRestaurantActivity</string>
+    <string name="prompt_trip_starting_loc">Enter Your Trip\'s Starting Location</string>
 
 </resources>

@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -66,6 +67,13 @@ public class RouteMapActivity extends AppCompatActivity implements
     private GoogleMap mMap;
     private DrawerLayout drawerLayout;
 
+    private static String location;
+    private static String tripName;
+    private static LatLng latlng;
+    static List<String> getplaces = new ArrayList();
+    List<LatLng> latLngs = new ArrayList();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +110,28 @@ public class RouteMapActivity extends AppCompatActivity implements
                 changeUIToEditTrip();
             }
         });
+
+        location= getIntent().getStringExtra("TRIP_LOCATION");
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+
+        Bundle bundle = getIntent().getParcelableExtra("bundle");
+        latlng = bundle.getParcelable("TRIP_LATLNG");
+
+        int attractionSize = getIntent().getIntExtra("ATTRACTION_LIST_SIZE", 0);
+        Log.d(TAG, "attraction size: " + attractionSize);
+
+        Bundle bundle2 = getIntent().getParcelableExtra("bundle2");
+        for (int i = 0; i < attractionSize; i++) {
+            LatLng latlongitude = bundle2.getParcelable("LOC_LATLNG" + i);
+            latLngs.add(latlongitude);
+            Log.d(TAG, "latlng: " + latlongitude);
+
+            String Latlng = latlongitude.latitude + "," + latlongitude.longitude;
+            Log.d(TAG, "------hereee------" + Latlng);
+            Log.d(TAG, "string latlng: " + Latlng);
+            getplaces.add(Latlng);
+        }
+
     }
 
     @Override
@@ -166,19 +196,33 @@ public class RouteMapActivity extends AppCompatActivity implements
                 .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
                 .build();
 
-        List<String> myplaces = new ArrayList();
-        myplaces.add("43.0744405,-89.3842855");
-        myplaces.add("43.0755516,-89.4042859");
-        myplaces.add("43.0780515,-89.4109526");
+        /**
+        ArrayList<Attraction> attr = FirebaseHandler.getAttractionsFromDB();
+        if (attr != null) {
+            for(int i = 0; i < attr.size(); i++) {
+                Log.d("-----", "-----attr name: " + attr.get(i).placeName);
+            }
+        } else {
+            Log.d("-----", "its not working");
+        }
+         **/
+
+        /**
+        for (int i = 0; i < getplaces.size(); i++) {
+            Log.d("-----tag", "here we are" + getplaces.get(i));
+        }
+         **/
+
+        List<String> myplaces = getplaces;
         //TODO: Remove the hardcoded myplaces elements above and replace with the places retrieved from EditTrip or from the database
 
         // TODO: Remove the hardcoded stuff below and replace with a list and a loop to display the markers on the map
-        LatLng capitol = new LatLng(43.0744405,-89.3842855);
-        mMap.addMarker(new MarkerOptions().position(capitol));
-        LatLng bascom = new LatLng(43.0755516,-89.4042859);
-        mMap.addMarker(new MarkerOptions().position(bascom));
-        LatLng tripp = new LatLng(43.0780515,-89.4109526);
-        mMap.addMarker(new MarkerOptions().position(tripp));
+
+        for (int i = 0; i < latLngs.size(); i++) {
+            mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
+        }
+
+
 
         for(int p = 0; p < myplaces.size()-1; p++) {
             DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1));
@@ -234,9 +278,8 @@ public class RouteMapActivity extends AppCompatActivity implements
         }
 
         //TODO: replace capitol with the first myplaces element
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(capitol, 6));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 6));
     }
-
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
@@ -315,7 +358,13 @@ public class RouteMapActivity extends AppCompatActivity implements
 
     public void changeUIToEditTrip() {
         Log.d(TAG, "Enter Edit Trip");
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", latlng);
         Intent intent = new Intent (this, EditTripActivity.class);
+        intent.putExtra("TRIP_LOCATION", location);
+        intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("bundle", args);
+
         startActivity(intent);
     }
 }

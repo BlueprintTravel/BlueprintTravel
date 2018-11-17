@@ -29,39 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class AddAttractionActivity extends AppCompatActivity {
 
-    public class Attraction{
-        String placeID;
-        LatLng placeLatLng;
-        Boolean isReq;
-        int duration;
 
-        public Attraction() {
-
-        }
-        public Attraction(LatLng placeLatLng, String placeID, int duration) {
-            setLatLng(placeLatLng);
-            setPlaceID(placeID);
-            setDuration(duration);
-        }
-        public void setLatLng(LatLng latLng) {
-            this.placeLatLng = latLng;
-        }
-        public void setPlaceID(String placeID) {
-            this.placeID = placeID;
-        }
-        public void setDuration(int duration) {
-            this.duration = duration;
-        }
-        public LatLng getLatLng() {
-            return placeLatLng;
-        }
-        public String getPlaceID() {
-            return placeID;
-        }
-        public int getDuration() {
-            return duration;
-        }
-    }
 
     private static final String TAG = "MyAttraction";
 
@@ -87,6 +55,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //update attraction object with placeid
                 addAttraction.placeID = place.getId();
                 addAttraction.placeLatLng = place.getLatLng();
+                addAttraction.placeName = place.getName().toString();
 
 
                 //Test placeid is correct
@@ -139,9 +108,22 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //Test duration result
                 Log.d(TAG, "Duration: " + addAttraction.duration);
 
-                //TODO: send database addAttraction object
+
 
                 //TODO: send info back to EditTrip
+                //Attraction attr = new Attraction(addAttraction.placeLatLng, addAttraction.placeID,
+                      //  addAttraction.duration, addAttraction.placeName);
+
+
+
+                double placeLat = addAttraction.placeLatLng.latitude;
+                double placelng = addAttraction.placeLatLng.longitude;
+
+                setResult(1, new Intent().putExtra("placeLat", placeLat)
+                .putExtra("placeID", addAttraction.placeID)
+                .putExtra("duration", addAttraction.duration)
+                .putExtra("placeName", addAttraction.placeName)
+                .putExtra("placeLng", placelng));
                 finish();
 
             }

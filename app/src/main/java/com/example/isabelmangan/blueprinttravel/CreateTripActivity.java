@@ -37,6 +37,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
     private TextView mPlaceDetailsText;
 
     private TextView mPlaceAttribution;
+    private Place place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +54,25 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         //mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         //mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+
         Button mNextButton = (Button) findViewById(R.id.next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updatePage();
+                updatePage(place);
             }
         });
 
 
     }
 
-    public void updatePage() {
+    public void updatePage(Place place) {
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", place.getLatLng());
+
         Intent intent = new Intent (this, CreateTripActivityScreen2.class);
+        intent.putExtra("TRIP_LOCATION", place.getName());
+        intent.putExtra("bundle", args);
         startActivity(intent);
     }
 
@@ -75,6 +82,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         Log.i(TAG, "Place: " + place.getName());//get place details here
 
         //TODO: send place to database
+        this.place = place;
 
         // Format the returned place's details and display them in the TextView.
         /**

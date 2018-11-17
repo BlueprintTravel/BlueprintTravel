@@ -16,8 +16,13 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
 
@@ -30,9 +35,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private ArrayList<String> attractionNamesList = new ArrayList<>();
     private ArrayList<Integer> viewRestImagesList = new ArrayList<>(); //TODO
     private ArrayList<String> restaurantNamesList = new ArrayList<>(); //TODO
-    private ArrayList<AddAttractionActivity.Attraction> attractions = new ArrayList<>();
+    private ArrayList<Attraction> attractions = new ArrayList<>();
 
 
+    String userID;
+    String location;
+    String tripName;
+    LatLng latlng;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +55,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
+        FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
+        userID = currUser.getUid();
+        location= getIntent().getStringExtra("TRIP_LOCATION");
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+
+        Bundle bundle = getIntent().getParcelableExtra("bundle");
+        latlng = bundle.getParcelable("TRIP_LATLNG");
 
         PlaceAutocompleteFragment autocompleteFragment;
         autocompleteFragment = (PlaceAutocompleteFragment)
@@ -126,6 +142,25 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            String placeID = data.getStringExtra("placeID");
+            double placeLat = data.getDoubleExtra("placeLat", 0);
+            double placeLng = data.getDoubleExtra("placeLng", 0);
+            int duration = data.getIntExtra("duration", 0);
+
+            String placeName = data.getStringExtra("placeName");
+
+            LatLng placeLatLng = new LatLng(placeLat, placeLng);
+
+            Attraction attraction =
+                    new Attraction(placeLatLng, placeID, duration, placeName);
+            attractions.add(attraction);
+
+        }
+    }
+
     /**
      * Update UI to Add Attraction OR Add Restaurant Activity
      */
@@ -134,13 +169,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 2);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
@@ -158,9 +193,36 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
      */
     public void generateRoute() {
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
+        GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);
+
+        Map<String, Object> newTrip = new HashMap<>();
+        newTrip.put("tripName", tripName);
+        newTrip.put("locationName", location);
+        newTrip.put("LocationLatLng", geoPoint);
+
+        FirebaseHandler.addAttractions(attractions, newTrip);
+        for (int i = 0; i < attractions.size(); i++) {
+            Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
+            + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng
+            + " duration is " + attractions.get(i).duration);
+        }
+
+        Bundle args = new Bundle();
+        args.putParcelable("TRIP_LATLNG", latlng);
 
         Intent intent = new Intent(this, RouteMapActivity.class);
-        //TODO: putExtra AKA send info back to MapActivity UI: route on map, Create Trip button now Edit Trip, Name of Trip displayed
+        intent.putExtra("TRIP_LOCATION", location);
+        intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("bundle", args);
+
+        intent.putExtra("ATTRACTION_LIST_SIZE", attractions.size());
+        Bundle newargs = new Bundle();
+        for (int i = 0; i < attractions.size(); i++) {
+            newargs.putParcelable("LOC_LATLNG" + i, attractions.get(i).placeLatLng);
+        }
+        intent.putExtra("bundle2", newargs);
+
+
 
         //TODO: progress bar
         startActivity(intent);

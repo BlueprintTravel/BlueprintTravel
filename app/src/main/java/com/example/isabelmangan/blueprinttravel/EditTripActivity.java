@@ -12,6 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+
 import java.util.ArrayList;
 
 public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
@@ -19,6 +24,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private boolean isAttraction;
     private LocationsRecyclerViewAdapter attractionsAdapter;
     private LocationsRecyclerViewAdapter restaurantsAdapter;
+    private static final String TAG = "AutocompleteFragment";
     //TODO: make public?
     private ArrayList<Integer> viewAttrImagesList = new ArrayList<>();
     private ArrayList<String> attractionNamesList = new ArrayList<>();
@@ -40,6 +46,26 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
+
+        PlaceAutocompleteFragment autocompleteFragment;
+        autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.starting_place_autocomplete_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                Log.i(TAG, "Place: " + place.getName());//get place details here
+
+                // TODO: Save that as first location in route algorithm -- send to database
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+        autocompleteFragment.setHint("Enter Starting Location of Trip");
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +91,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         viewAttrImagesList.add(Color.RED);
         viewAttrImagesList.add(Color.BLACK);
 
-        attractionNamesList.add("Horse");
-        attractionNamesList.add("Cow");
-        attractionNamesList.add("Camel");
-        attractionNamesList.add("Sheep");
-        attractionNamesList.add("Goat");
+        attractionNamesList.add("Chicago");
+        attractionNamesList.add("New York");
+        attractionNamesList.add("Seattle");
+        attractionNamesList.add("Austin");
+        attractionNamesList.add("San Diego");
+
+        restaurantNamesList.add("Chipotle");
 
         //TODO: format better
         // set up the Attractions RecyclerView
@@ -86,7 +114,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         LinearLayoutManager horizontalRestLayoutManager
                 = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
         restaurantsRecyclerView.setLayoutManager(horizontalRestLayoutManager);
-        restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewAttrImagesList, attractionNamesList);
+        restaurantsAdapter = new LocationsRecyclerViewAdapter(this, viewAttrImagesList, restaurantNamesList);
         restaurantsAdapter.setClickListener(this);
         restaurantsRecyclerView.setAdapter(restaurantsAdapter);
 

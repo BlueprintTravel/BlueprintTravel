@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,6 +147,10 @@ public class FirebaseHandler {
         newTrip.put("locationName", LocationName);
         newTrip.put("LocationLatLng", geoPoint);
 
+        if(userRef == "") {
+            userRef = getCurrentlySignedInUser().getUid();
+        }
+
 
 
         db.collection("users").document(userRef).collection("trips");
@@ -170,6 +175,45 @@ public class FirebaseHandler {
 
     }
 
+    /**
+    public static ArrayList<Attraction> getAttractionsFromDB () {
+        final ArrayList<Attraction> attrList = null;
+        db.collection("users").document(userRef).collection("trips").
+                document(tripID).collection("locations").
+                get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "--here11");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                       // String latlng = document.getData().get("Latlng").toString();
+
+                        Log.d(TAG, "got here!");
+                        LatLng Latlng = new LatLng(5,5);
+
+                        String placeID = document.getData().get("placeID").toString();
+                        Log.d(TAG, "placeID is " + placeID);
+                        String durationString = document.getData().get("duration").toString();
+                        int duration = Integer.parseInt(durationString);
+                        Log.d(TAG, "duration is " + duration);
+                        String locationName = document.getData().get("locationName").toString();
+                        Log.d(TAG, "locationName is " + locationName);
+                        Attraction attraction =
+                                new Attraction(Latlng, placeID, duration, locationName);
+                        attrList.add(attraction);
+
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                    }
+                } else {
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
+            }
+        });
+
+        return attrList;
+    }
+     */
 
 
 

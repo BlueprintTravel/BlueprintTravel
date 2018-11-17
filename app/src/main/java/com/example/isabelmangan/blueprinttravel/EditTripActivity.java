@@ -188,6 +188,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         intent.putExtra("TRIP_NAME", tripName);
         intent.putExtra("bundle", args);
 
+        intent.putExtra("ATTRACTION_LIST_SIZE", attractions.size());
+        Bundle newargs = new Bundle();
+        for (int i = 0; i < attractions.size(); i++) {
+            newargs.putParcelable("LOC_LATLNG" + i, attractions.get(i).placeLatLng);
+        }
+        intent.putExtra("bundle2", newargs);
+
+
 
         //TODO: progress bar
         startActivity(intent);

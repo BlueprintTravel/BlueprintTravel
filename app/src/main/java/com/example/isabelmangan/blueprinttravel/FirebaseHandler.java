@@ -98,7 +98,62 @@ public class FirebaseHandler {
     }
 
 
-    public static void getCurrentTrip(String tripName, final Map<String, Object> newLocation) {
+    public static void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
+        FirebaseHandler.setUpFirestore();
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+                                db.collection("users").document(userRef)
+                                        .collection("trips")
+                                        .whereEqualTo("tripName", tripName).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+                                                        db.collection("users").document(userRef).collection("trips")
+                                                                .document(tripID).collection("locations").add(newLocation)
+                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                    @Override
+                                                                    public void onSuccess(DocumentReference documentReference) {
+                                                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w(TAG, "Error adding document", e);
+                                                                    }
+                                                                });
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
+
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
     }
 
@@ -122,24 +177,11 @@ public class FirebaseHandler {
             getCurrentTrip(tripName, newLocation);
 
 
-            //method ends here!
+            
 
-            db.collection("users").document(userRef).collection("trips")
-                    .document(tripID).collection("locations").
-                    add(newLocation).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    tripID = documentReference.getId();
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                        }
-                    });
+
         }
+
 
     }
 

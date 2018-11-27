@@ -8,15 +8,17 @@ public class Attraction {
     Boolean isReq;
     int duration;
     String placeName;
+    String tripName;
 
     public Attraction() {
 
     }
-    public Attraction(LatLng placeLatLng, String placeID, int duration, String placeName) {
+    public Attraction(LatLng placeLatLng, String placeID, int duration, String placeName, String tripName) {
         setLatLng(placeLatLng);
         setPlaceID(placeID);
         setDuration(duration);
         setPlaceName(placeName);
+        setTripName(tripName);
     }
     public void setLatLng(LatLng latLng) {
         this.placeLatLng = latLng;
@@ -30,6 +32,7 @@ public class Attraction {
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
     }
+    public void setTripName(String tripName) { this.tripName = tripName; }
     public LatLng getLatLng() {
         return placeLatLng;
     }
@@ -42,4 +45,5 @@ public class Attraction {
     public int getDuration() {
         return duration;
     }
+    public String getTripName() { return tripName; }
 }

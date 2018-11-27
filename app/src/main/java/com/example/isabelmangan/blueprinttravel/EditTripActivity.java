@@ -155,7 +155,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             LatLng placeLatLng = new LatLng(placeLat, placeLng);
 
             Attraction attraction =
-                    new Attraction(placeLatLng, placeID, duration, placeName);
+                    new Attraction(placeLatLng, placeID, duration, placeName, tripName);
             attractions.add(attraction);
 
         }

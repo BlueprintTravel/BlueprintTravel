@@ -1,6 +1,7 @@
 package com.example.isabelmangan.blueprinttravel;
 
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class FirebaseHandler {
     private static FirebaseFirestore db;
     private static String tripID;
     private static String userRef = "";
+
 
     public static void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
@@ -96,6 +98,9 @@ public class FirebaseHandler {
     }
 
 
+    public static void getCurrentTrip(String tripName, final Map<String, Object> newLocation) {
+
+    }
 
     public static void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
         setUpFirestore();
@@ -106,11 +111,19 @@ public class FirebaseHandler {
             GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
             Attraction currentPlace = attractions.get(i);
             Map<String, Object> newLocation = new HashMap<>();
-            newLocation.put("locationName", attractions.get(i).placeName);
-            newLocation.put("duration", attractions.get(i).duration);
-            newLocation.put("placeID", attractions.get(i).placeID);
-            newLocation.put("isRequired", attractions.get(i).isReq);
+            newLocation.put("locationName", currentPlace.placeName);
+            newLocation.put("duration", currentPlace.duration);
+            newLocation.put("placeID", currentPlace.placeID);
+            newLocation.put("isRequired", currentPlace.isReq);
             newLocation.put("LatLng", geoPoint);
+
+            String tripName = currentPlace.getTripName();
+
+            getCurrentTrip(tripName, newLocation);
+
+
+            //method ends here!
+
             db.collection("users").document(userRef).collection("trips")
                     .document(tripID).collection("locations").
                     add(newLocation).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -131,10 +144,51 @@ public class FirebaseHandler {
     }
 
 
-
-    public static void addTrip(String tripName, String LocationName, LatLng LocationLatLng){
+    public static void getCurrentUser(final Map<String, Object> newTrip) {
 
         FirebaseHandler.setUpFirestore();
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+                                db.collection("users").document(userRef).collection("trips")
+                                        .add(newTrip)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                tripID = documentReference.getId();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error adding document", e);
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+    public static void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
+
+        FirebaseHandler.setUpFirestore();
+
+        Log.d(TAG, "current userRef: " + userRef);
 
         Double tripLat = LocationLatLng.latitude;
         Double tripLng = LocationLatLng.longitude;
@@ -142,34 +196,13 @@ public class FirebaseHandler {
         GeoPoint geoPoint = new GeoPoint(tripLat, tripLng);
 
         // Create a new trip with a trip name
-        Map<String, Object> newTrip = new HashMap<>();
+        final Map<String, Object> newTrip = new HashMap<>();
         newTrip.put("tripName", tripName);
         newTrip.put("locationName", LocationName);
         newTrip.put("LocationLatLng", geoPoint);
 
-        if(userRef == "") {
-            userRef = getCurrentlySignedInUser().getUid();
-        }
+        getCurrentUser(newTrip);
 
-
-
-        db.collection("users").document(userRef).collection("trips");
-
-        db.collection("users").document(userRef)
-                .collection("trips").add(newTrip)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        tripID = documentReference.getId();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
 
 
 
@@ -214,7 +247,6 @@ public class FirebaseHandler {
         return attrList;
     }
      */
-
 
 
 }

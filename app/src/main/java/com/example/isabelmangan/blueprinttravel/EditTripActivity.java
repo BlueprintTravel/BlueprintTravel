@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
+import org.w3c.dom.Attr;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +38,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private ArrayList<Integer> viewRestImagesList = new ArrayList<>(); //TODO
     private ArrayList<String> restaurantNamesList = new ArrayList<>(); //TODO
     private ArrayList<Attraction> attractions = new ArrayList<>();
+
+    final ArrayList<String> DbAttractionList = new ArrayList<>();
 
 
     String userID;
@@ -55,7 +59,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
-        FirebaseUser currUser = FirebaseHandler.getCurrentlySignedInUser();
+        FirebaseHandler fbHander = new FirebaseHandler();
+        FirebaseUser currUser = fbHander.getCurrentlySignedInUser();
         userID = currUser.getUid();
         location= getIntent().getStringExtra("TRIP_LOCATION");
         tripName = getIntent().getStringExtra("TRIP_NAME");
@@ -101,19 +106,47 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         // data to populate the RecyclerView with
         // TODO: delete colors & animals lol - populate with images and placeNames in better location
+        //first check if db has any locations- add those
+        //then check if new attraction is returned from add attraction
+        //probably just the last item in attractions- attractions.size()-1
         viewAttrImagesList.add(Color.BLUE);
         viewAttrImagesList.add(Color.YELLOW);
         viewAttrImagesList.add(Color.MAGENTA);
         viewAttrImagesList.add(Color.RED);
         viewAttrImagesList.add(Color.BLACK);
 
-        attractionNamesList.add("Chicago");
-        attractionNamesList.add("New York");
-        attractionNamesList.add("Seattle");
-        attractionNamesList.add("Austin");
-        attractionNamesList.add("San Diego");
+        //attractionNamesList.add("Chicago");
+        //attractionNamesList.add("New York");
+        //attractionNamesList.add("Seattle");
+        //attractionNamesList.add("Austin");
+        //attractionNamesList.add("San Diego");
 
-        restaurantNamesList.add("Chipotle");
+        //restaurantNamesList.add("Chipotle");
+
+        //add names from DB
+
+        addNamesFromDB();
+
+
+
+
+
+
+        Log.d("db attractions list", "size is : " + DbAttractionList.size());
+        if(DbAttractionList.size() > 0) {
+            for (int i = 0; i < DbAttractionList.size(); i++) {
+                attractionNamesList.add(DbAttractionList.get(i));
+                Log.d("attractions list", "db attraction " + i + " is : " + DbAttractionList.get(i));
+            }
+        }
+
+        //add most recently added location- may duplicate if editing trip? prob need to add checks to that
+        Log.d("local attractions list", "size is : " + attractions.size());
+        if (attractions.size() > 0) {
+            attractionNamesList.add(attractions.get(attractions.size()-1).placeName);
+            Log.d("local attractions list", "adding : " + attractions.get(attractions.size()-1).placeName);
+        }
+
 
         //TODO: format better
         // set up the Attractions RecyclerView
@@ -141,6 +174,27 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             }
         });
     }
+
+
+    public void addNamesFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getAttractionNamesForCurrentTrip(tripName, new AttractionNamesCallback() {
+            @Override
+            public void onCallback(ArrayList<String> attrNames) {
+                for (int i = 0; i < attrNames.size(); i++) {
+                    DbAttractionList.add(attrNames.get(i));
+                }
+
+                //All logic needs to happen here!
+                
+
+
+            }
+        });
+        Log.d("attractions list", "addNamesFromDB size outside is" + DbAttractionList.size());
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -200,7 +254,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         newTrip.put("locationName", location);
         newTrip.put("LocationLatLng", geoPoint);
 
-        FirebaseHandler.addAttractions(attractions, newTrip);
+        FirebaseHandler fbHander = new FirebaseHandler();
+        fbHander.addAttractions(attractions, newTrip);
         for (int i = 0; i < attractions.size(); i++) {
             Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
             + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng

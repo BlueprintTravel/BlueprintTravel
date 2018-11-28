@@ -32,19 +32,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 
 
 public class FirebaseHandler {
-    private static FirebaseAuth mAuth;
-    private static final String TAG = "EmailPassword";
+    private  FirebaseAuth mAuth;
+    private  final String TAG = "EmailPassword";
 
-    private static FirebaseFirestore db;
-    private static String tripID;
-    private static String userRef = "";
+    private  FirebaseFirestore db;
+    private  String tripID;
+    private  String userRef = "";
 
 
-    public static void setUpFirestore() {
+    public  void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -53,7 +54,7 @@ public class FirebaseHandler {
      * Initializes Firebase Authentication
      * @return authentication key
      */
-    public static FirebaseAuth getAuth() {
+    public  FirebaseAuth getAuth() {
         mAuth = FirebaseAuth.getInstance();
         return mAuth;
     }
@@ -62,12 +63,13 @@ public class FirebaseHandler {
      * Gets currently signed in Firebase User
      * @return current user
      */
-    public static FirebaseUser getCurrentlySignedInUser(){
+    public  FirebaseUser getCurrentlySignedInUser(){
+        getAuth();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         return currentUser;
     }
 
-    public static void addUser() {
+    public  void addUser() {
 
         setUpFirestore();
         //String userID = getCurrentlySignedInUser().getUid();
@@ -98,8 +100,8 @@ public class FirebaseHandler {
     }
 
 
-    public static void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
-        FirebaseHandler.setUpFirestore();
+    public  void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
+        setUpFirestore();
         db.collection("users")
                 .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
                 .get()
@@ -157,11 +159,11 @@ public class FirebaseHandler {
 
     }
 
-    public static void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
+    public  void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
-        db.collection("users").document(userRef).collection("trips")
-                .document(tripID).collection("locations");
+        //db.collection("users").document(userRef).collection("trips")
+          //      .document(tripID).collection("locations");
         for (int i = 0; i < attractions.size(); i++) {
             GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
             Attraction currentPlace = attractions.get(i);
@@ -177,7 +179,7 @@ public class FirebaseHandler {
             getCurrentTrip(tripName, newLocation);
 
 
-            
+
 
 
         }
@@ -186,9 +188,9 @@ public class FirebaseHandler {
     }
 
 
-    public static void getCurrentUser(final Map<String, Object> newTrip) {
+    public  void getCurrentUser(final Map<String, Object> newTrip) {
 
-        FirebaseHandler.setUpFirestore();
+        setUpFirestore();
         db.collection("users")
                 .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
                 .get()
@@ -226,9 +228,9 @@ public class FirebaseHandler {
     }
 
 
-    public static void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
+    public  void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
 
-        FirebaseHandler.setUpFirestore();
+        setUpFirestore();
 
         Log.d(TAG, "current userRef: " + userRef);
 
@@ -290,5 +292,107 @@ public class FirebaseHandler {
     }
      */
 
+
+    public  void getAttractionNamesForCurrentTrip(final String tripName, AttractionNamesCallback callback) {
+        setUpFirestore();
+        final ArrayList<String> attrNameList = new ArrayList<>();
+
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+
+                                                        db.collection("users").document(userRef).collection("trips").
+                                                                document(tripID).collection("locations").
+                                                                get().
+                                                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                                String locationName = document.getData().get("locationName").toString();
+
+                                                                                attrNameList.add(locationName);
+
+                                                                                Log.d(TAG, "inside size is : " + attrNameList.size());
+
+                                                                                Log.d(TAG,  "!!! attraction name !!!" + locationName);
+                                                                                callback.onCallback(attrNameList);
+
+                                                                            }
+
+                                                                        } else {
+                                                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                                                        }
+
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+
+    public  ArrayList<String> getActualAttractionNames(String userRef, String tripID) {
+        final ArrayList<String> attrNameList = new ArrayList<>();
+        db.collection("users").document(userRef).collection("trips").
+                document(tripID).collection("locations").
+                get().
+                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                String locationName = document.getData().get("locationName").toString();
+
+                                attrNameList.add(locationName);
+
+                                Log.d(TAG,  "!!! attraction name !!!" + locationName);
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+        return attrNameList;
+    }
 
 }

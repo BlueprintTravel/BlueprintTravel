@@ -196,22 +196,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                 .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
                 .build();
 
-        /**
-        ArrayList<Attraction> attr = FirebaseHandler.getAttractionsFromDB();
-        if (attr != null) {
-            for(int i = 0; i < attr.size(); i++) {
-                Log.d("-----", "-----attr name: " + attr.get(i).placeName);
-            }
-        } else {
-            Log.d("-----", "its not working");
-        }
-         **/
 
-        /**
-        for (int i = 0; i < getplaces.size(); i++) {
-            Log.d("-----tag", "here we are" + getplaces.get(i));
-        }
-         **/
 
         List<String> myplaces = getplaces;
         //TODO: Remove the hardcoded myplaces elements above and replace with the places retrieved from EditTrip or from the database
@@ -343,7 +328,8 @@ public class RouteMapActivity extends AppCompatActivity implements
 
         //TODO: logout functionality connecting to database
         //session.setLogin(false);
-
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.logout();
         //db.deleteUsers();
 
         // Launching the login activity

@@ -45,6 +45,10 @@ public class FirebaseHandler {
     private  String userRef = "";
 
 
+    /**
+     * Initializes Firestore db
+     * sets the local db variaable when this class is instantiated
+     */
     public  void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
     }
@@ -69,6 +73,10 @@ public class FirebaseHandler {
         return currentUser;
     }
 
+    /**
+     * Adds a user to the db
+     * Adds their userID and their email
+     */
     public  void addUser() {
 
         setUpFirestore();
@@ -100,6 +108,15 @@ public class FirebaseHandler {
     }
 
 
+    /**
+     * Helper method called by addAttraction that figures out what the current trip in the DB
+     * is to store the attractions in the right place. This method then should actually store
+     * the attractions
+     *
+     * For testing- test AddAttractions() since this is just called by that
+     * @param tripName the name of the trip the attraction should be added to
+     * @param newLocation the map of the new attraction location to be added to the trip
+     */
     public  void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
         setUpFirestore();
         db.collection("users")
@@ -159,6 +176,13 @@ public class FirebaseHandler {
 
     }
 
+    /**
+     * Adds attractions to a trip
+     * Creates a map object of each attraction in the attractions list and then calls getCurrentTrip
+     * on each attraction in order to actually add it to the right trip.
+     * @param attractions the list of attractions (name, duration, placeID, isRequired, LatLng)
+     * @param trip the name of the trip these attractions should be added to in the db
+     */
     public  void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
@@ -187,6 +211,15 @@ public class FirebaseHandler {
 
     }
 
+    /**
+     * Helper method called by addTrip that figures out what the current user in the DB
+     * is to store the trip in the right place. This method then should actually store
+     * the trip
+     *
+     *  For testing- test addTrip() since this is just called by that
+     * @param newTrip the map of the new trip that should be added to the user- newTrip holds
+     *                trip name, location, and latlng
+     */
 
     public  void getCurrentUser(final Map<String, Object> newTrip) {
 
@@ -227,7 +260,12 @@ public class FirebaseHandler {
 
     }
 
-
+    /**
+     * adds a new trip in the db
+     * @param tripName the name of the trip to store
+     * @param LocationName the location of the trip that should be stored
+     * @param LocationLatLng the latlng location of the trip that should be stored
+     */
     public  void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
 
         setUpFirestore();
@@ -293,6 +331,14 @@ public class FirebaseHandler {
      */
 
 
+    /**
+     * Gets the list of attraction names for the list to be displayed in Edit Trip.
+     * The names are sent to the interface when they are fetched and then are retrieved from the
+     * interface in EditTripActivity
+     *
+     * @param tripName the name of the trip that locations are shown for
+     * @param callback the interface to send the location names
+     */
     public  void getAttractionNamesForCurrentTrip(final String tripName, AttractionNamesCallback callback) {
         setUpFirestore();
         final ArrayList<String> attrNameList = new ArrayList<>();
@@ -368,7 +414,12 @@ public class FirebaseHandler {
     }
 
 
-
+    /**
+     * Ignore this method for now I'm just using it for reference and then I will delete :)
+     * @param userRef
+     * @param tripID
+     * @return
+     */
     public  ArrayList<String> getActualAttractionNames(String userRef, String tripID) {
         final ArrayList<String> attrNameList = new ArrayList<>();
         db.collection("users").document(userRef).collection("trips").
@@ -393,6 +444,14 @@ public class FirebaseHandler {
                 });
 
         return attrNameList;
+    }
+
+    /**
+     * Logs the user out of firebase
+     */
+    public void logout() {
+        getAuth();
+        mAuth.signOut();
     }
 
 }

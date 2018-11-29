@@ -175,7 +175,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             @Override
             public void onCallback(ArrayList<String> attrNames) {
                 ArrayList<String> attractionNamesList = new ArrayList<>();
-                for (int i = 0; i < attrNames.size(); i++) {
+                for (int i = attrNames.size()-1; i >= 0; i--) {
                     DbAttractionList.add(attrNames.get(i));
                     boolean alreadyInList = false;
                     for (int j = 0; j < attractionNamesList.size(); j++) {
@@ -189,7 +189,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
                 }
 
-                
+
 
                 //All logic needs to happen here!
                 RecyclerView attractionsRecyclerView = findViewById(R.id.attractions_list);

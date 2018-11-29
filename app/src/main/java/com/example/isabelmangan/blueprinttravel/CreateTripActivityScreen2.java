@@ -27,7 +27,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
         setContentView(R.layout.activity_create_trip_screen2);
 
         mTripName = findViewById(R.id.tripName);
-        FirebaseHandler fbHandler = new FirebaseHandler();
+        final FirebaseHandler fbHandler = new FirebaseHandler();
         FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
 
 

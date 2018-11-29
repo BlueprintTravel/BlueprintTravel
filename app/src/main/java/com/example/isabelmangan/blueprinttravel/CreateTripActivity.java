@@ -76,6 +76,10 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         startActivity(intent);
     }
 
+    public Place getPlace(){
+        return this.place;
+    }
+
     @Override
     public void onPlaceSelected(Place place) {
         // TODO: Get info about the selected place.

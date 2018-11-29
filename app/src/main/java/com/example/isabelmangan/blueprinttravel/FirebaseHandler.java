@@ -198,6 +198,7 @@ public class FirebaseHandler {
             newLocation.put("isRequired", currentPlace.isReq);
             newLocation.put("LatLng", geoPoint);
 
+
             String tripName = currentPlace.getTripName();
 
             getCurrentTrip(tripName, newLocation);

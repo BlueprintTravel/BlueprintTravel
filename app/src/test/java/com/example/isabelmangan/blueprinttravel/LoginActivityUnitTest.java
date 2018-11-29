@@ -53,7 +53,7 @@ public class LoginActivityUnitTest {
             logger.addAppender(appender);
             try {
 
-                Logger.getLogger(LoginActivity.class).info(logger.toString());
+                Logger.getLogger(LoginActivity.class).info("LoginActivityTest");
             }
             finally {
                 logger.removeAppender(appender);
@@ -62,7 +62,7 @@ public class LoginActivityUnitTest {
             final List<LoggingEvent> log = appender.getLog();
             final LoggingEvent firstLogEntry = log.get(0);
             assertThat(firstLogEntry.getLevel(), is(Level.INFO));
-            //assertThat((String) firstLogEntry.getMessage(), is("register:success"));
+            assertThat((String) firstLogEntry.getMessage(), is("LoginActivityTest"));
             assertThat(firstLogEntry.getLoggerName(), is("com.example.isabelmangan.blueprinttravel.LoginActivity"));
         }
 

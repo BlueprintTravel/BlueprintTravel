@@ -183,14 +183,14 @@ public class FirebaseHandler {
      * @param attractions the list of attractions (name, duration, placeID, isRequired, LatLng)
      * @param trip the name of the trip these attractions should be added to in the db
      */
-    public  void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
+    public  void addAttractions(Attraction attraction, Map<String, Object> trip){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
           //      .document(tripID).collection("locations");
-        for (int i = 0; i < attractions.size(); i++) {
-            GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
-            Attraction currentPlace = attractions.get(i);
+
+            GeoPoint geoPoint = new GeoPoint(attraction.placeLatLng.latitude, attraction.placeLatLng.longitude);
+            Attraction currentPlace = attraction;
             Map<String, Object> newLocation = new HashMap<>();
             newLocation.put("locationName", currentPlace.placeName);
             newLocation.put("duration", currentPlace.duration);
@@ -207,7 +207,7 @@ public class FirebaseHandler {
 
 
 
-        }
+
 
 
     }

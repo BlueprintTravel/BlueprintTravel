@@ -1,6 +1,7 @@
 package com.example.isabelmangan.blueprinttravel;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,19 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import java.util.List;
 
 public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationsRecyclerViewAdapter.ViewHolder> {
 
-    private List<Integer> mViewColors; //TODO: change to images of place
+    //private List<Integer> mViewColors; //TODO: change to images of place
+    private List<Bitmap> mViewImageBitmaps;
     private List<String> mLocations;
     private LayoutInflater mInflater;
     private LocationsRecyclerViewAdapter.ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    LocationsRecyclerViewAdapter(Context context, List<Integer> colors, List<String> locations) {
+    LocationsRecyclerViewAdapter(Context context, List<Bitmap> images, List<String> locations) {
         this.mInflater = LayoutInflater.from(context);
-        this.mViewColors = colors; //TODO: change to images
+        this.mViewImageBitmaps = images; //TODO: change to images
         this.mLocations = locations;
     }
 
@@ -35,10 +44,50 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<Locations
     // binds the data to the view and textview in each row
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int color = mViewColors.get(position);
-        String animal = mLocations.get(position);
-        holder.myView.setBackgroundColor(color);
-        holder.myTextView.setText(animal);
+        Bitmap image = mViewImageBitmaps.get(position);
+        String locationName = mLocations.get(position);
+        holder.myView.setImageBitmap(image);
+        holder.myTextView.setText(locationName);
+
+
+        /**
+         * Fetching photos of places using placeId and setting photos on imageview of recyclerview
+         */
+        if (!places.getPhotoRefrence().equals("null")) {
+            String photorefrence = places.getPhotoRefrence();
+            String url = baseUrl + photorefrence + "&key=" + key;
+
+
+            final String placeId = places.getPlaceId();
+            final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
+            photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                    // Get the list of photos.
+                    PlacePhotoMetadataResponse photos = task.getResult();
+                    // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                    PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                    // Get the first photo in the list.
+                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap bitmap = photo.getBitmap();
+                            holder.placeListIV.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+
     }
 
     // total number of rows

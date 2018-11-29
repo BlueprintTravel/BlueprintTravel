@@ -55,6 +55,22 @@
           }
         },
         {
+          "client_id": "59021469931-qv97jjocopks8120lv9lufn2i5ckensn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "5c87c2f78abb49fcb7fca5e333f41a695d723f0a"
+          }
+        },
+        {
+          "client_id": "59021469931-d8kutk688ugbdgh1nhl2tjih5gbb5pt3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.isabelmangan.blueprinttravel",
+            "certificate_hash": "25cfa48da7cd7191aebad684090ca44e666befe3"
+          }
+        },
+        {
           "client_id": "59021469931-vuu48v362bo9m9rk7ehfsnqan1lm8shb.apps.googleusercontent.com",
           "client_type": 3
         }

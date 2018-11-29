@@ -1,8 +1,10 @@
 package com.example.isabelmangan.blueprinttravel;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +15,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -32,6 +42,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     private LocationsRecyclerViewAdapter attractionsAdapter;
     private LocationsRecyclerViewAdapter restaurantsAdapter;
     private static final String TAG = "AutocompleteFragment";
+    protected GeoDataClient mGeoDataClient;
     //TODO: make public?
     private ArrayList<Integer> viewAttrImagesList = new ArrayList<>();
 
@@ -41,11 +52,12 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     final ArrayList<String> DbAttractionList = new ArrayList<>();
 
-
     String userID;
     String location;
     String tripName;
     LatLng latlng;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,8 +135,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         //restaurantNamesList.add("Chipotle");
 
-        //add names from DB
 
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // TODO: Start using the Places API.
+
+        //add names from DB
         addNamesFromDB();
 
 
@@ -314,6 +331,35 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         //TODO: progress bar
         startActivity(intent);
 
+    }
+
+
+    // Request photos and metadata for the specified place.
+    private void getPhotos() {
+        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
+        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
+        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
+                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                // Get the attribution text.
+                CharSequence attribution = photoMetadata.getAttributions();
+                // Get a full-size bitmap for the photo.
+                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                        PlacePhotoResponse photo = task.getResult();
+                        Bitmap bitmap = photo.getBitmap();
+                    }
+                });
+            }
+        });
     }
 
 }

@@ -74,18 +74,12 @@ public class AddAttractionActivity extends AppCompatActivity {
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
         simpleSwitch.setChecked(false);
 
-        //final RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
-        /**
-        final TimePicker simpleTimePicker=(TimePicker)findViewById(R.id.simpleTimePicker); // initiate a time picker
-        // set the value for current hours
-        simpleTimePicker.setIs24HourView(true); // set 24 hours mode for the time picker
-        simpleTimePicker.setCurrentHour(1); // set clock hour to default to 1 hour
-        simpleTimePicker.setCurrentMinute(30); //set clock min to default to 30 min
 
-        **/
        //Define number pickers
         final NumberPicker hourPicker = findViewById(R.id.hourPicker);
         final NumberPicker minPicker = findViewById(R.id.minPicker);
+
+        //minPicker.setDisplayedValues(null);
 
         //set min and max for hour clock
         hourPicker.setMinValue(0);

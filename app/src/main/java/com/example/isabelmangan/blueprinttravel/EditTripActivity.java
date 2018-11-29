@@ -214,6 +214,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             String placeID = data.getStringExtra("placeID");
             double placeLat = data.getDoubleExtra("placeLat", 0);
             double placeLng = data.getDoubleExtra("placeLng", 0);
+            boolean isRequired = data.getBooleanExtra("isRequired", false);
             int duration = data.getIntExtra("duration", 0);
 
             String placeName = data.getStringExtra("placeName");
@@ -221,7 +222,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             LatLng placeLatLng = new LatLng(placeLat, placeLng);
 
             Attraction attraction =
-                    new Attraction(placeLatLng, placeID, duration, placeName, tripName);
+                    new Attraction(placeLatLng, placeID, duration, placeName, tripName, isRequired);
             attractions.add(attraction);
 
             GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);

@@ -123,7 +123,8 @@ public class AddAttractionActivity extends AppCompatActivity {
                 .putExtra("placeID", addAttraction.placeID)
                 .putExtra("duration", addAttraction.duration)
                 .putExtra("placeName", addAttraction.placeName)
-                .putExtra("placeLng", placelng));
+                .putExtra("placeLng", placelng)
+                .putExtra("isRequired", addAttraction.isReq));
                 finish();
 
             }

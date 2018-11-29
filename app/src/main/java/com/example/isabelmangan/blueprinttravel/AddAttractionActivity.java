@@ -89,7 +89,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
         //set min and max for hour clock
         hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(10);
+        hourPicker.setMaxValue(5);
 
 
         //set min and max for min clock

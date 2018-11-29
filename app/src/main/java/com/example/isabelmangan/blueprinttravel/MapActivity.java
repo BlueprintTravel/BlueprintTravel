@@ -217,7 +217,8 @@ public class MapActivity extends AppCompatActivity implements
 
         //TODO: logout functionality connecting to database
         //session.setLogin(false);
-
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.logout();
         //db.deleteUsers();
 
         // Launching the login activity

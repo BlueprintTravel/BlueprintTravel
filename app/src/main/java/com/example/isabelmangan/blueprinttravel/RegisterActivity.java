@@ -77,7 +77,8 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         //Set up Firebase Auth
-        mAuth = FirebaseHandler.getAuth();
+        FirebaseHandler fbHander = new FirebaseHandler();
+        mAuth = fbHander.getAuth();
         //setupActionBar();
         // Set up the sign up form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -140,8 +141,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     public void addUserToFirestore(FirebaseUser user){
-        FirebaseHandler.setUpFirestore();
-        FirebaseHandler.addUser();
+        FirebaseHandler fbHander = new FirebaseHandler();
+        fbHander.setUpFirestore();
+        fbHander.addUser();
 
     }
 

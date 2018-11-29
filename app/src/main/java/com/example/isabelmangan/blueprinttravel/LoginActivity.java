@@ -69,7 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //Set up Firebase Auth
-        mAuth = FirebaseHandler.getAuth();
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        mAuth = fbHandler.getAuth();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);

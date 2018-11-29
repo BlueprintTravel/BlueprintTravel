@@ -180,7 +180,7 @@ public class FirebaseHandler {
      * Adds attractions to a trip
      * Creates a map object of each attraction in the attractions list and then calls getCurrentTrip
      * on each attraction in order to actually add it to the right trip.
-     * @param attractions the list of attractions (name, duration, placeID, isRequired, LatLng)
+     * @param attraction the list of attractions (name, duration, placeID, isRequired, LatLng)
      * @param trip the name of the trip these attractions should be added to in the db
      */
     public  void addAttractions(Attraction attraction, Map<String, Object> trip){
@@ -202,11 +202,6 @@ public class FirebaseHandler {
             String tripName = currentPlace.getTripName();
 
             getCurrentTrip(tripName, newLocation);
-
-
-
-
-
 
 
 
@@ -389,6 +384,98 @@ public class FirebaseHandler {
 
                                                                                 Log.d(TAG,  "!!! attraction name !!!" + locationName);
                                                                                 callback.onCallback(attrNameList);
+
+                                                                            }
+
+                                                                        } else {
+                                                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                                                        }
+
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+    /**
+     * Gets the list of attractions for a specific trip in the database- for use in routemapActivity
+     *
+     * @param tripName the name of the trip that locations are shown for
+     * @param callback the interface to send the location names
+     */
+    public  void getAttractionsForCurrentTrip(final String tripName, AttractionsCallback callback) {
+        setUpFirestore();
+        final ArrayList<Attraction> attrList = new ArrayList<>();
+
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+
+                                                        db.collection("users").document(userRef).collection("trips").
+                                                                document(tripID).collection("locations").
+                                                                get().
+                                                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                                String placeName = document.getData().get("locationName").toString();
+                                                                                //LatLng placeLatLng = document.getData().get("LatLng").toString();
+
+                                                                                GeoPoint gp = document.getGeoPoint("LatLng");
+                                                                                LatLng placeLatLng = new LatLng(gp.getLatitude(),gp.getLongitude());
+
+                                                                                String placeID = document.getData().get("placeID").toString();
+                                                                                String durationString = document.getData().get("duration").toString();
+                                                                                int duration = Integer.parseInt(durationString);
+
+                                                                                Boolean isReq = document.getBoolean("isRequired");
+
+                                                                                Attraction attr = new Attraction(placeLatLng, placeID, duration, placeName,  tripName, isReq);
+
+                                                                                attrList.add(attr);
+
+                                                                                Log.d(TAG, "inside size is : " + attrList.size());
+
+                                                                                callback.onCallback(attrList);
 
                                                                             }
 

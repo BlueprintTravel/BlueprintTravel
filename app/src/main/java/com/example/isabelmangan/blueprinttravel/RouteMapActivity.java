@@ -70,6 +70,9 @@ public class RouteMapActivity extends AppCompatActivity implements
     private static String location;
     private static String tripName;
     private static LatLng latlng;
+    ActionBar actionbar;
+    final ArrayList<Attraction> DbAttractionList = new ArrayList<>();
+
     static List<String> getplaces = new ArrayList();
     List<LatLng> latLngs = new ArrayList();
 
@@ -86,10 +89,10 @@ public class RouteMapActivity extends AppCompatActivity implements
         //Customized Toolbar for menu button support
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
+        actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionbar.setTitle("ROUTE MAP"); //TODO: map name
+        //actionbar.setTitle(tripName); //fix
 
         //Nav Drawer AKA Sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -189,7 +192,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         enableMyLocation();
 
         //Define list to get all latlng for the route
-        List<LatLng> path = new ArrayList();
+
 
         //Execute Directions API request
         GeoApiContext context = new GeoApiContext.Builder()
@@ -197,11 +200,11 @@ public class RouteMapActivity extends AppCompatActivity implements
                 .build();
 
 
-
+        List<LatLng> path = new ArrayList();
         List<String> myplaces = getplaces;
-        //TODO: Remove the hardcoded myplaces elements above and replace with the places retrieved from EditTrip or from the database
 
-        // TODO: Remove the hardcoded stuff below and replace with a list and a loop to display the markers on the map
+        addPlacesFromDB();
+
 
         for (int i = 0; i < latLngs.size(); i++) {
             mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
@@ -265,6 +268,40 @@ public class RouteMapActivity extends AppCompatActivity implements
         //TODO: replace capitol with the first myplaces element
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 6));
     }
+
+    public void addPlacesFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
+                    public void onCallback(ArrayList<Attraction> attr) {
+                        ArrayList<Attraction> attrList = new ArrayList<>();
+                        for (int i = attr.size()-1; i >= 0; i--) {
+                            DbAttractionList.add(attr.get(i));
+                            boolean alreadyInList = false;
+                            for (int j = 0; j < attrList.size(); j++) {
+                                if (attrList.get(j).getPlaceName().equals(attr.get(i).getPlaceName())) {
+                                    alreadyInList = true;
+                                }
+                            }
+                            if (!alreadyInList) {
+                                attrList.add(attr.get(i));
+                            }
+
+                        }
+
+                        //TODO: all logic needs to happen here!!
+                        //attrList holds a list of attractions for the current trip
+                        for (int i = 0; i < attrList.size(); i++) {
+                            Log.d("emailpassword- routeMap", "attrList number " + i + " is :" + attrList.get(i).getPlaceName());
+                        }
+
+                        actionbar.setTitle(attrList.get(0).getTripName());
+
+
+
+                    }
+        });
+    }
+
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */

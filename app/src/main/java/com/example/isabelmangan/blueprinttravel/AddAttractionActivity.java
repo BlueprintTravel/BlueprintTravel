@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -18,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.common.api.Status;
@@ -26,6 +28,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 
 
 public class AddAttractionActivity extends AppCompatActivity {
@@ -44,6 +48,8 @@ public class AddAttractionActivity extends AppCompatActivity {
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
 
+        final boolean[] placeExists = {false};
+
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -54,6 +60,9 @@ public class AddAttractionActivity extends AppCompatActivity {
                 // TODO: Get info about the selected place.
                Log.i(TAG, "Place: " + place.getName());
                 //update attraction object with placeid
+
+                placeExists[0] = true;
+
                 addAttraction.placeID = place.getId();
                 addAttraction.placeLatLng = place.getLatLng();
                 addAttraction.placeName = place.getName().toString();
@@ -72,7 +81,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
-        simpleSwitch.setChecked(false);
+        simpleSwitch.setChecked(true);
 
 
        //Define number pickers
@@ -141,17 +150,44 @@ public class AddAttractionActivity extends AppCompatActivity {
                 double placeLat = addAttraction.placeLatLng.latitude;
                 double placelng = addAttraction.placeLatLng.longitude;
 
+
                 setResult(1, new Intent().putExtra("placeLat", placeLat)
-                .putExtra("placeID", addAttraction.placeID)
-                .putExtra("duration", addAttraction.duration)
-                .putExtra("placeName", addAttraction.placeName)
-                .putExtra("placeLng", placelng)
-                .putExtra("isRequired", addAttraction.isReq));
+                        .putExtra("placeID", addAttraction.placeID)
+                        .putExtra("duration", addAttraction.duration)
+                        .putExtra("placeName", addAttraction.placeName)
+                        .putExtra("placeLng", placelng)
+                        .putExtra("isRequired", addAttraction.isReq));
                 finish();
+
+                /**if(validateInputs(placeExists[0]) == true){
+                    setResult(1, new Intent().putExtra("placeLat", placeLat)
+                            .putExtra("placeID", addAttraction.placeID)
+                            .putExtra("duration", addAttraction.duration)
+                            .putExtra("placeName", addAttraction.placeName)
+                            .putExtra("placeLng", placelng)
+                            .putExtra("isRequired", addAttraction.isReq));
+                    finish();
+                }else{
+                    Toast toast = Toast.makeText(getApplicationContext(), "Must Enter Attraction Location", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }**/
+
 
             }
         });
 
+    }
+
+    public boolean validateInputs(boolean placeExists){
+        if (placeExists == false) {
+            /**Toast toast = Toast.makeText(getApplicationContext(), "Must Enter Attraction Location", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();**/
+            return false;
+        }
+
+        return true;
     }
 
 

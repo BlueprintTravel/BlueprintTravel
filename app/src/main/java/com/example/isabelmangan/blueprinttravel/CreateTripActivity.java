@@ -56,9 +56,6 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         //mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         //mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
-
-
-
         Button mNextButton = (Button) findViewById(R.id.next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override

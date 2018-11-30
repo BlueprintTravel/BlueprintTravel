@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import org.w3c.dom.Attr;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     final ArrayList<String> DbAttractionList = new ArrayList<>();
 
-
+    String startLocation = null;
     String userID;
     String location;
     String tripName;
@@ -68,6 +70,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         Bundle bundle = getIntent().getParcelableExtra("bundle");
         latlng = bundle.getParcelable("TRIP_LATLNG");
 
+
         PlaceAutocompleteFragment autocompleteFragment;
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.starting_place_autocomplete_fragment);
@@ -77,7 +80,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 Log.i(TAG, "Place: " + place.getName());//get place details here
 
                 // TODO: Save that as first location in route algorithm -- send to database
-
+                startLocation = place.getName().toString();
             }
 
             @Override
@@ -162,11 +165,32 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         final Button generateRouteButton = findViewById(R.id.generate_route_button);
         generateRouteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                generateRoute();
+                if(validateInputs(attractions,startLocation) == true){
+                    generateRoute();
+                }else{
+                    finish();
+                    startActivity(getIntent());
+                }
             }
         });
     }
 
+
+    public boolean validateInputs(ArrayList<Attraction> attractions , String startLocation){
+        if (startLocation == null){
+            Toast toast = Toast.makeText(getApplicationContext(),"Must Enter Starting Location", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+            return false;
+        }else if(attractions.size() < 1){
+            Toast toast = Toast.makeText(getApplicationContext(),"Must Add At Least One Attraction", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+            return false;
+        }
+
+        return true;
+    }
 
     public void addNamesFromDB() {
         FirebaseHandler fbHandler = new FirebaseHandler();

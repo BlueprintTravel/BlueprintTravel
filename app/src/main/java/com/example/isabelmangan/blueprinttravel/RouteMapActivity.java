@@ -263,7 +263,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         }
 
         //TODO: replace capitol with the first myplaces element
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 6));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
     }
     /**
      * Enables the My Location layer if the fine location permission has been granted.

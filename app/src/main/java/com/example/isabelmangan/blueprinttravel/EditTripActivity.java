@@ -46,6 +46,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     String location;
     String tripName;
     LatLng latlng;
+    Attraction start;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 Log.i(TAG, "Place: " + place.getName());//get place details here
 
                 // TODO: Save that as first location in route algorithm -- send to database
+                String placeID = place.getId();
+                LatLng placeLatLng = place.getLatLng();
+                String placeName = place.getName().toString();
+                Boolean placeIsReq = true;
+                int placeDuration = 0;
+                String placeTripName = tripName;
+
+                start = new Attraction(placeLatLng, placeID, placeDuration, placeName, placeTripName, placeIsReq);
 
             }
 
@@ -275,6 +285,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
      * Generates the trip's route
      */
     public void generateRoute() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.addStartingLocationToDB(start);
+
+
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
         GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);
 

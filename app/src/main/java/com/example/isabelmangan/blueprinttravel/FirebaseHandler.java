@@ -534,6 +534,170 @@ public class FirebaseHandler {
         return attrNameList;
     }
 
+    public void addStartingLocationToDB(Attraction start) {
+        setUpFirestore();
+        String userid = getCurrentlySignedInUser().getUid();
+        //db.collection("users").document(userRef).collection("trips")
+        //      .document(tripID).collection("locations");
+
+        GeoPoint geoPoint = new GeoPoint(start.placeLatLng.latitude, start.placeLatLng.longitude);
+        Attraction currentPlace = start;
+        Map<String, Object> newLocation = new HashMap<>();
+        newLocation.put("locationName", currentPlace.placeName);
+        newLocation.put("duration", currentPlace.duration);
+        newLocation.put("placeID", currentPlace.placeID);
+        newLocation.put("isRequired", currentPlace.isReq);
+        newLocation.put("LatLng", geoPoint);
+
+
+        String tripName = currentPlace.getTripName();
+
+        getCurrentTripStart(tripName, newLocation);
+    }
+
+    private void getCurrentTripStart(final String tripName, final Map<String, Object> newLocation) {
+        setUpFirestore();
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+                                db.collection("users").document(userRef)
+                                        .collection("trips")
+                                        .whereEqualTo("tripName", tripName).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+                                                        db.collection("users").document(userRef).collection("trips")
+                                                                .document(tripID).collection("startingLocation").add(newLocation)
+                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                    @Override
+                                                                    public void onSuccess(DocumentReference documentReference) {
+                                                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w(TAG, "Error adding document", e);
+                                                                    }
+                                                                });
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
+
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+    public void getStarLocationForCurrentTrip(String tripName, StartLocationCallback callback) {
+        setUpFirestore();
+        final ArrayList<Attraction> attrList = new ArrayList<>();
+
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+
+                                                        db.collection("users").document(userRef).collection("trips").
+                                                                document(tripID).collection("startingLocation").
+                                                                get().
+                                                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                                String placeName = document.getData().get("locationName").toString();
+                                                                                //LatLng placeLatLng = document.getData().get("LatLng").toString();
+
+                                                                                GeoPoint gp = document.getGeoPoint("LatLng");
+                                                                                LatLng placeLatLng = new LatLng(gp.getLatitude(),gp.getLongitude());
+
+                                                                                String placeID = document.getData().get("placeID").toString();
+                                                                                String durationString = document.getData().get("duration").toString();
+                                                                                int duration = Integer.parseInt(durationString);
+
+                                                                                Boolean isReq = document.getBoolean("isRequired");
+
+                                                                                Attraction attr = new Attraction(placeLatLng, placeID, duration, placeName,  tripName, isReq);
+
+                                                                                attrList.add(attr);
+
+                                                                                Log.d(TAG, "inside size is : " + attrList.size());
+
+                                                                                callback.onCallback(attrList);
+
+                                                                            }
+
+                                                                        } else {
+                                                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                                                        }
+
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
     /**
      * Logs the user out of firebase
      */

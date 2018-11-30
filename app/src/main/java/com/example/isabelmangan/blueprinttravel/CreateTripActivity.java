@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
@@ -39,6 +40,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
     private TextView mPlaceAttribution;
     private Place place;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,16 +57,39 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         //mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
 
+
+
         Button mNextButton = (Button) findViewById(R.id.next);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updatePage(place);
+
+                if(validateInputs(place) == true){
+                    updatePage(place);
+                }else{
+                    finish();
+                    startActivity(getIntent());
+                }
+
+
             }
         });
 
 
     }
+
+
+    public boolean validateInputs(Place place){
+        if (place == null){
+            Toast toast = Toast.makeText(getApplicationContext(),"Trip Location Required", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+            return false;
+        }
+
+        return true;
+    }
+
 
     public void updatePage(Place place) {
         Bundle args = new Bundle();

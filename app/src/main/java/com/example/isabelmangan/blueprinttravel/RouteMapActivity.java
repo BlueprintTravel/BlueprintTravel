@@ -107,7 +107,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        //actionbar.setTitle(tripName); //fix
+
 
         //Nav Drawer AKA Sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -174,10 +174,8 @@ public class RouteMapActivity extends AppCompatActivity implements
         // Handle action bar actions click -- swap UI fragments
         switch (item.getItemId()) {
             case R.id.nav_myTrips:
-                //TODO: go to myTrips activity/fragment
-                return true;
-            case R.id.nav_favorites:
-                //TODO: go to favorites activity/fragment
+                Intent intentTrips = new Intent (this, MyTripsActivity.class);
+                startActivity(intentTrips);
                 return true;
             case R.id.nav_homepage:
                 Intent intent = new Intent (this, MapActivity.class);
@@ -281,7 +279,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         }
 
         //TODO: replace capitol with the first myplaces element
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 6));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
     }
 
     public void addPlacesFromDB() {

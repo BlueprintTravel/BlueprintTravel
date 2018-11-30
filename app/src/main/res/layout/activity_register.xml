@@ -77,7 +77,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@color/colorPrimaryDark"
                 android:text="@string/register_new_user"
+                android:textColor="@color/common_google_signin_btn_text_dark_default"
                 android:textStyle="bold" />
 
 

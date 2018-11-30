@@ -1,5 +1,7 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.util.Log;
+
 import java.util.*;
 
 class Algo {
@@ -7,7 +9,7 @@ class Algo {
 
 
     public static ArrayList<Integer> generateOptimizedRoute(int curr, int[] open, int[] close,
-                                                            int[][] walking_time, int[] time_spent)
+                                                            long[][] walking_time, int[] time_spent)
     {
         int[] visited = {0,0,0,0};
         // Calculate the location with lea}st H, which is also open
@@ -15,7 +17,7 @@ class Algo {
 
         ArrayList<Integer> path = new ArrayList<>();
 
-        int x, H, minH;
+        long x, H, minH;
         int start = 0;
         boolean changed = false;
 
@@ -63,9 +65,10 @@ class Algo {
         for (int i = 0; i < path.size(); i++)
         {
             if (i == path.size() -1)
-                System.out.print(path.get(i));
+                Log.d("emailpassword", "path size is " + path.get(i));
             else
-                System.out.print(path.get(i)+" --> ");
+                Log.d("emailpassword", "path size is " + path.get(i)+" --> ");
+
         }
 
         return path;

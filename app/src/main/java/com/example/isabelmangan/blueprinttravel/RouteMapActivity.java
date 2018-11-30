@@ -47,10 +47,14 @@ import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixRow;
 import com.google.maps.model.EncodedPolyline;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.model.OpeningHours;
 import com.google.maps.model.PlaceDetails;
+import com.google.maps.model.TravelMode;
 
 
 import java.util.ArrayList;
@@ -141,7 +145,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         Bundle bundle2 = getIntent().getParcelableExtra("bundle2");
         for (int i = 0; i < attractionSize; i++) {
             LatLng latlongitude = bundle2.getParcelable("LOC_LATLNG" + i);
-            latLngs.add(latlongitude);
+            //latLngs.add(latlongitude);
             Log.d(TAG, "latlng: " + latlongitude);
 
             String Latlng = latlongitude.latitude + "," + latlongitude.longitude;
@@ -213,73 +217,10 @@ public class RouteMapActivity extends AppCompatActivity implements
                 .build();
 
 
-        List<LatLng> path = new ArrayList();
-        List<String> myplaces = getplaces;
+
 
         addPlacesFromDB();
 
-
-        for (int i = 0; i < latLngs.size(); i++) {
-            mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
-        }
-
-
-
-        for(int p = 0; p < myplaces.size()-1; p++) {
-            DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1));
-            try {
-                DirectionsResult res = req.await();
-
-                //Loop through legs and steps to get encoded polylines of each step
-                if (res.routes != null && res.routes.length > 0) {
-                    DirectionsRoute route = res.routes[0];
-
-                    if (route.legs !=null) {
-                        for(int i=0; i<route.legs.length; i++) {
-                            DirectionsLeg leg = route.legs[i];
-                            if (leg.steps != null) {
-                                for (int j=0; j<leg.steps.length;j++){
-                                    DirectionsStep step = leg.steps[j];
-                                    if (step.steps != null && step.steps.length >0) {
-                                        for (int k=0; k<step.steps.length;k++){
-                                            DirectionsStep step1 = step.steps[k];
-                                            EncodedPolyline points1 = step1.polyline;
-                                            if (points1 != null) {
-                                                //Decode polyline and add points to list of route coordinates
-                                                List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
-                                                for (com.google.maps.model.LatLng coord1 : coords1) {
-                                                    path.add(new LatLng(coord1.lat, coord1.lng));
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        EncodedPolyline points = step.polyline;
-                                        if (points != null) {
-                                            //Decode polyline and add points to list of route coordinates
-                                            List<com.google.maps.model.LatLng> coords = points.decodePath();
-                                            for (com.google.maps.model.LatLng coord : coords) {
-                                                path.add(new LatLng(coord.lat, coord.lng));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch(Exception ex) {
-                Log.e(TAG, ex.getLocalizedMessage());
-            }
-        }
-
-        //Draw the polyline
-        if (path.size() > 0) {
-            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
-            mMap.addPolyline(opts);
-        }
-
-        //TODO: replace capitol with the first myplaces element
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
     }
 
     public void addPlacesFromDB() {
@@ -293,21 +234,25 @@ public class RouteMapActivity extends AppCompatActivity implements
 
                         for (int i = attr.size()-1; i >= 0; i--) {
                             DbAttractionList.add(attr.get(i));
+                            latLngs.add(attr.get(i).placeLatLng);
                             boolean alreadyInList = false;
                             for (int j = 0; j < attrList.size(); j++) {
                                 if (attrList.get(j).getPlaceName().equals(attr.get(i).getPlaceName())) {
                                     alreadyInList = true;
                                 }
                             }
-                            if (!alreadyInList) {
+                            boolean required = attr.get(i).getIsReq();
+                            Log.d("emailpassword", "is required: " + required);
+                            if (!alreadyInList && required) {
                                 attrList.add(attr.get(i));
+
                             }
 
                         }
                         int size = attrList.size();
                         int[] open = new int[size];
                         int[] close = new int[size];
-                        int[][] walking_time = new int[size][size];
+                        long[][] walking_time = new long[size][size];
                         int[] time_spent = new int[size];
 
                         //TODO: all logic needs to happen here!!
@@ -316,7 +261,12 @@ public class RouteMapActivity extends AppCompatActivity implements
                             Log.d("emailpassword- routeMap", "attrList number " + i + " is :" + attrList.get(i).getPlaceName());
                         }
 
-                        actionbar.setTitle(attrList.get(0).getTripName());
+                        if (attr.size() >= 0) {
+                            actionbar.setTitle(attr.get(0).getTripName());
+                        } else {
+                            actionbar.setTitle("Trip");
+                        }
+
                         int curr = 540;
                         for (int i = 0; i < attrList.size(); i++) {
                             String placeId = attrList.get(i).getPlaceID();
@@ -405,16 +355,41 @@ public class RouteMapActivity extends AppCompatActivity implements
                         }
                         String[] origins = new String[attrList.size()];
                         String[] destination = new String[attrList.size()];
+                        com.google.maps.model.LatLng[] originsLatLng = new com.google.maps.model.LatLng[attrList.size()];
+                        com.google.maps.model.LatLng[] destinationsLatLng = new com.google.maps.model.LatLng[attrList.size()];
+
                         for (int i = 0; i < attrList.size(); i++) {
-                            origins[i] = attrList.get(i).getPlaceID();
-                            destination[i] = attrList.get(i).getPlaceID();
+                            origins[i] = attrList.get(i).getPlaceName();
+                            destination[i] = attrList.get(i).getPlaceName();
+                            com.google.maps.model.LatLng originLatLng =
+                                    new com.google.maps.model.LatLng(attrList.get(i).getLatLng().latitude,
+                                            attrList.get(i).getLatLng().longitude);
+                            com.google.maps.model.LatLng destinationLatLng =
+                                    new com.google.maps.model.LatLng(attrList.get(i).getLatLng().latitude,
+                                            attrList.get(i).getLatLng().longitude);
+                            originsLatLng[i] = originLatLng;
+                            destinationsLatLng[i] = destinationLatLng;
                         }
+
 
                         DistanceMatrixApiRequest matrix = DistanceMatrixApi.getDistanceMatrix(context, origins, destination);
                         try {
-                            //IM STILL WORKING ON THIS
+                            DistanceMatrix res = matrix.origins(originsLatLng).destinations(destinationsLatLng).mode(TravelMode.WALKING).await();
+                            DistanceMatrixRow[] rows  = res.rows;
+                            for (int i = 0; i < rows.length; i++) {
+                                Log.d("emailpassword", "ok this one lol : " + rows[i].toString());
+                                Log.d("emailpassword", "ok this one now : " +rows[i].elements.toString());
+                                DistanceMatrixElement[] dmelement = rows[i].elements;
+                                for (int j = 0; j < dmelement.length; j++) {
+                                    Log.d("emailpassword", "ok this one now 2 : " +dmelement[j].duration.inSeconds/60);
+                                    walking_time[i][j] = dmelement[j].duration.inSeconds/60;
+                                }
+
+                            }
+
+
                         } catch (Exception ex) {
-                            //IM STILL WORKING ON THIS
+
                         }
 
 
@@ -433,9 +408,113 @@ public class RouteMapActivity extends AppCompatActivity implements
                             Log.d("emailpassword", "time spent at " + i + " : " + time_spent[i]);
                         }
 
-
-
                         //TODO: call the algorithm
+
+                        Algo algo = new Algo();
+                        ArrayList<Integer> optimizedRoute = new ArrayList<>();
+                        optimizedRoute = algo.generateOptimizedRoute(540, open, close, walking_time, time_spent);
+                        ArrayList<Attraction> optimizedAttrList = new ArrayList<>();
+                        if (optimizedRoute != null) {
+                            for (int i = 0; i < optimizedRoute.size(); i++) {
+                                Log.d("emailpassword", "optimized route is " + optimizedRoute.get(i));
+
+                                optimizedAttrList.add(attrList.get(optimizedRoute.get(i)));
+                            }
+
+                        }
+                        List<String> optimizedPlaces = new ArrayList<>();
+                        if (optimizedAttrList != null) {
+                            for (int i = 0; i < optimizedAttrList.size(); i++) {
+                                Log.d("emailpassword", "attraction is " + optimizedAttrList.get(i).getPlaceName());
+                                String ll = optimizedAttrList.get(i).getLatLng().latitude + "," + optimizedAttrList.get(i).getLatLng().longitude;
+                                optimizedPlaces.add(ll);
+                            }
+                        }
+                        List<LatLng> path = new ArrayList();
+
+
+                        fbHandler.getStarLocationForCurrentTrip(tripName, new StartLocationCallback() {
+                                    public void onCallback(ArrayList<Attraction> startLocation) {
+                                        if(startLocation != null) {
+                                            Log.d("emailpassword", "start location isnt null");
+                                            LatLng startLatLng = startLocation.get(0).getLatLng();
+                                            //startll.add(startLatLng);
+                                            String startLoc = startLatLng.latitude + "," + startLatLng.longitude;
+                                            Log.d("emailpassword", "start location is " + startLoc);
+                                            optimizedPlaces.add(0,startLoc);
+                                            latLngs.add(0, startLatLng);
+                                            Log.d("emailpassword", "my places zero is " + optimizedPlaces.get(0));
+                                        }
+                                    }
+                                });
+                        List<String> myplaces = optimizedPlaces;
+
+
+
+                        for (int i = 0; i < latLngs.size(); i++) {
+                            mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
+                        }
+
+
+
+                        for(int p = 0; p < myplaces.size()-1; p++) {
+                            DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1)).mode(TravelMode.WALKING);
+                            try {
+                                DirectionsResult res = req.await();
+
+                                //Loop through legs and steps to get encoded polylines of each step
+                                if (res.routes != null && res.routes.length > 0) {
+                                    DirectionsRoute route = res.routes[0];
+
+                                    if (route.legs !=null) {
+                                        for(int i=0; i<route.legs.length; i++) {
+                                            DirectionsLeg leg = route.legs[i];
+                                            if (leg.steps != null) {
+                                                for (int j=0; j<leg.steps.length;j++){
+                                                    DirectionsStep step = leg.steps[j];
+                                                    if (step.steps != null && step.steps.length >0) {
+                                                        for (int k=0; k<step.steps.length;k++){
+                                                            DirectionsStep step1 = step.steps[k];
+                                                            EncodedPolyline points1 = step1.polyline;
+                                                            if (points1 != null) {
+                                                                //Decode polyline and add points to list of route coordinates
+                                                                List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
+                                                                for (com.google.maps.model.LatLng coord1 : coords1) {
+                                                                    path.add(new LatLng(coord1.lat, coord1.lng));
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        EncodedPolyline points = step.polyline;
+                                                        if (points != null) {
+                                                            //Decode polyline and add points to list of route coordinates
+                                                            List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                                            for (com.google.maps.model.LatLng coord : coords) {
+                                                                path.add(new LatLng(coord.lat, coord.lng));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch(Exception ex) {
+                                Log.e(TAG, ex.getLocalizedMessage());
+                            }
+                        }
+
+                        //Draw the polyline
+                        if (path.size() > 0) {
+                            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+                            mMap.addPolyline(opts);
+                        }
+
+                        //TODO: replace capitol with the first myplaces element
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
+
+
+
 
 
 

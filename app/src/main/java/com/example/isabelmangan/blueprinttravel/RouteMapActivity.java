@@ -22,6 +22,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -31,18 +34,30 @@ import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
+import com.google.maps.PlaceDetailsRequest;
+import com.google.maps.PlacesApi;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.model.OpeningHours;
+import com.google.maps.model.PlaceDetails;
+
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import static com.google.maps.PlaceDetailsRequest.FieldMask.OPENING_HOURS;
 
 public class RouteMapActivity extends AppCompatActivity implements
         OnMyLocationButtonClickListener,
@@ -271,9 +286,13 @@ public class RouteMapActivity extends AppCompatActivity implements
 
     public void addPlacesFromDB() {
         FirebaseHandler fbHandler = new FirebaseHandler();
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
+                .build();
         fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
                     public void onCallback(ArrayList<Attraction> attr) {
                         ArrayList<Attraction> attrList = new ArrayList<>();
+
                         for (int i = attr.size()-1; i >= 0; i--) {
                             DbAttractionList.add(attr.get(i));
                             boolean alreadyInList = false;
@@ -287,6 +306,11 @@ public class RouteMapActivity extends AppCompatActivity implements
                             }
 
                         }
+                        int size = attrList.size();
+                        int[] open = new int[size];
+                        int[] close = new int[size];
+                        int[][] walking_time = new int[size][size];
+                        int[] time_spent = new int[size];
 
                         //TODO: all logic needs to happen here!!
                         //attrList holds a list of attractions for the current trip
@@ -295,12 +319,139 @@ public class RouteMapActivity extends AppCompatActivity implements
                         }
 
                         actionbar.setTitle(attrList.get(0).getTripName());
+                        int curr = 540;
+                        for (int i = 0; i < attrList.size(); i++) {
+                            String placeId = attrList.get(i).getPlaceID();
+                            int duration = attrList.get(i).getDuration();
+                            time_spent[i] = duration;
+                            int openTime = 0;
+                            int closeTime = 24*60;
+                            PlaceDetailsRequest request = PlacesApi.placeDetails(context, placeId).fields(OPENING_HOURS);
+                            try {
+                                Log.d("emailpassword", "here!");
+                                PlaceDetails res = request.await();
+                                Log.d("emailpassword", "this pn " + res.formattedPhoneNumber);
+                                String[] openingHours = res.openingHours.weekdayText;
+                                Log.d("emailpassword", "this is: " + openingHours.length);
+                                int cat = 0;
+                                int cat2 = 0;
+                                Calendar calendar = Calendar.getInstance();
+                                int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+                                //SUNDAY = 1
+                                //MONDAY = 2
+                                //TUESDAY = 3
+                                //WEDNESDAY = 4
+                                //THURSDAY = 5
+                                //FRIDAY = 6
+                                //SATURDAY = 7
+
+                                if ((day == 1) || (day == 2) || (day == 6)) {
+                                    cat = 7;
+                                    cat2 = 22;
+                                }
+                                if (day == 3) {
+                                    cat = 8;
+                                    cat2 = 24;
+                                }
+                                if (day == 4) {
+                                    cat = 10;
+                                    cat2 = 28;
+                                }
+                                if ((day == 5) || (day == 7)) {
+                                    cat = 9;
+                                    cat2 = 26;
+                                }
+
+                                OpeningHours.Period[] per = res.openingHours.periods;
+                                for (int j = 0; j < openingHours.length; j++) {
+                                    Log.d("emailpassword", "opening hour " + openingHours[j]);
+                                    Log.d("emailpassword", "per opening hour " + per[j].toString());
+                                }
+                                String startHourString = per[day-1].toString().substring(cat, cat+2);
+                                int startHour = Integer.parseInt(startHourString);
+
+                                String startMinString = per[day-1].toString().substring(cat+3, cat+5);
+                                int startMin = Integer.parseInt(startMinString);
+
+                                String endHourString = per[day-1].toString().substring(cat2, cat2+2);
+                                int endHour = Integer.parseInt(endHourString);
+
+                                String endMinString = per[day-1].toString().substring(cat2+3, cat2+5);
+                                int endMin = Integer.parseInt(endMinString);
+                                if (!((startHour == 0) && (startMin == 0))) {
+                                    openTime = (startHour*60) + startMin;
+                                }
+                                if (!((endHour == 0) && (endHour == 0))) {
+                                    closeTime = (endHour*60) + endMin;
+                                }
+
+
+                                Log.d("emailpassword", "per opening hour " + per[day-1].toString().substring(cat, cat+2));
+                                Log.d("emailpassword", "per opening min " + per[day-1].toString().substring(cat+3, cat+5));
+
+                                Log.d("emailpassword", "per closing hour " + per[day-1].toString().substring(cat2, cat2+2));
+                                Log.d("emailpassword", "per closing min " + per[day-1].toString().substring(cat2+3, cat2+5));
+
+                                open[i] = openTime;
+                                close[i] = closeTime;
+
+
+                                //open time, close time, time spent, walking time
+
+                            } catch (Exception ex) {
+
+                            }
+
+
+                        }
+                        String[] origins = new String[attrList.size()];
+                        String[] destination = new String[attrList.size()];
+                        for (int i = 0; i < attrList.size(); i++) {
+                            origins[i] = attrList.get(i).getPlaceID();
+                            destination[i] = attrList.get(i).getPlaceID();
+                        }
+
+                        DistanceMatrixApiRequest matrix = DistanceMatrixApi.getDistanceMatrix(context, origins, destination);
+                        try {
+                            //IM STILL WORKING ON THIS
+                        } catch (Exception ex) {
+                            //IM STILL WORKING ON THIS
+                        }
+
+
+                        for (int i = 0; i < open.length; i++) {
+                            if ((open[i] ==0) && close[i] == 0) {
+                                close[i] = 24*60;
+                            }
+                        }
+                        for (int i = 0; i < open.length; i++) {
+                            Log.d("emailpassword", "open " + i + " : " + open[i]);
+                        }
+                        for (int i = 0; i < close.length; i++) {
+                            Log.d("emailpassword", "close " + i + " : " + close[i]);
+                        }
+                        for (int i = 0; i < time_spent.length; i++) {
+                            Log.d("emailpassword", "time spent at " + i + " : " + time_spent[i]);
+                        }
+
+
+
+                        //TODO: call the algorithm
+
+
+
+
+
+
+
 
 
 
                     }
         });
     }
+
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.

@@ -233,7 +233,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             newTrip.put("LocationLatLng", geoPoint);
 
             FirebaseHandler fbHander = new FirebaseHandler();
-            fbHander.addAttractions(attraction, newTrip);
+            fbHander.addAttractions(attraction);
             for (int i = 0; i < attractions.size(); i++) {
                 Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
                         + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng

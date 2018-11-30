@@ -49,7 +49,7 @@ public class FirebaseHandler {
      * Initializes Firestore db
      * sets the local db variaable when this class is instantiated
      */
-    public  void setUpFirestore() {
+    public void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -58,7 +58,7 @@ public class FirebaseHandler {
      * Initializes Firebase Authentication
      * @return authentication key
      */
-    public  FirebaseAuth getAuth() {
+    public FirebaseAuth getAuth() {
         mAuth = FirebaseAuth.getInstance();
         return mAuth;
     }
@@ -117,7 +117,7 @@ public class FirebaseHandler {
      * @param tripName the name of the trip the attraction should be added to
      * @param newLocation the map of the new attraction location to be added to the trip
      */
-    public  void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
+    private void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
         setUpFirestore();
         db.collection("users")
                 .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
@@ -181,9 +181,9 @@ public class FirebaseHandler {
      * Creates a map object of each attraction in the attractions list and then calls getCurrentTrip
      * on each attraction in order to actually add it to the right trip.
      * @param attraction the list of attractions (name, duration, placeID, isRequired, LatLng)
-     * @param trip the name of the trip these attractions should be added to in the db
+
      */
-    public  void addAttractions(Attraction attraction, Map<String, Object> trip){
+    public  void addAttractions(Attraction attraction){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
@@ -217,7 +217,7 @@ public class FirebaseHandler {
      *                trip name, location, and latlng
      */
 
-    public  void getCurrentUser(final Map<String, Object> newTrip) {
+    private void getCurrentUser(final Map<String, Object> newTrip) {
 
         setUpFirestore();
         db.collection("users")
@@ -262,7 +262,7 @@ public class FirebaseHandler {
      * @param LocationName the location of the trip that should be stored
      * @param LocationLatLng the latlng location of the trip that should be stored
      */
-    public  void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
+    public void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
 
         setUpFirestore();
 
@@ -416,7 +416,7 @@ public class FirebaseHandler {
      * @param tripName the name of the trip that locations are shown for
      * @param callback the interface to send the location names
      */
-    public  void getAttractionsForCurrentTrip(final String tripName, AttractionsCallback callback) {
+    public void getAttractionsForCurrentTrip(final String tripName, AttractionsCallback callback) {
         setUpFirestore();
         final ArrayList<Attraction> attrList = new ArrayList<>();
 

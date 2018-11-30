@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -315,5 +316,4 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         startActivity(intent);
 
     }
-
 }

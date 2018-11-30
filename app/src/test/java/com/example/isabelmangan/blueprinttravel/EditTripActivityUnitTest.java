@@ -2,6 +2,9 @@ package com.example.isabelmangan.blueprinttravel;
 
 import android.util.Log;
 import static org.mockito.Mockito.verify;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -25,7 +28,7 @@ import static org.junit.Assert.assertThat;
 
 public class EditTripActivityUnitTest {
     @Test
-    public void test() {
+    public void test1() {
         final EditTripActivityUnitTest.TestAppender appender = new EditTripActivityUnitTest.TestAppender();
         EditTripActivity test = new EditTripActivity();
         test.addLocationUpdateUI(Boolean.TRUE);
@@ -45,6 +48,14 @@ public class EditTripActivityUnitTest {
         assertThat(firstLogEntry.getLevel(), is(Level.INFO));
         assertThat((String) firstLogEntry.getMessage(), is("EditTripActivityUnitTest"));
         assertThat(firstLogEntry.getLoggerName(), is("com.example.isabelmangan.blueprinttravel.EditTripActivity"));
+    }
+
+    @Test
+    public void test2(){
+        EditTripActivity test = new EditTripActivity();
+        test.latlng = new LatLng(5,5);
+        test.generateRoute();
+
     }
 
     class TestAppender extends AppenderSkeleton {

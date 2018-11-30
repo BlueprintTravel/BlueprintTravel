@@ -14,7 +14,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.AutocompleteFilter;
-
+import android.content.Context;
 
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import android.os.Bundle;
@@ -33,7 +33,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
     private static final String TAG = "AutocompleteFragment";
-
+    private static Context context;
     private TextView mPlaceDetailsText;
 
     private TextView mPlaceAttribution;
@@ -43,7 +43,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trip);
-
+        CreateTripActivity.context = this;
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -107,8 +107,11 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         // TODO: Handle the error.
         Log.i(TAG, "An error occurred: " + status);
 
-        Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
-                Toast.LENGTH_SHORT).show();
+//        Toast message = Toast.makeText(CreateTripActivity.context,
+//                "Place selection failed: " +
+//                        status.getStatusMessage(),
+//                Toast.LENGTH_SHORT);
+//        message.show();
     }
 
     private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,

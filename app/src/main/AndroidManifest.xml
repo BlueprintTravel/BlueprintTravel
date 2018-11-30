@@ -68,7 +68,7 @@
             android:name=".EditTripActivity"
             android:exported="true"
             android:label="@string/title_activity_edit_trip"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RouteMapActivity"
             android:exported="true"
@@ -82,7 +82,7 @@
             android:exported="true"
             android:label="@string/title_activity_add_restaurant"
             android:parentActivityName=".EditTripActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
     </application>
 

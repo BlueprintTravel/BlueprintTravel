@@ -112,54 +112,45 @@ public class AddAttractionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
             //TODO: add attraction to list in database
-                //Set Required bool from Switch isChecked
-                addAttraction.isReq = simpleSwitch.isChecked();
+                if(validateInputs(placeExists[0]) == true) {
 
-                //Test switch status
-                Log.d(TAG, "Required status: " + addAttraction.isReq);
+                    //Set Required bool from Switch isChecked
+                    addAttraction.isReq = simpleSwitch.isChecked();
 
-                //TODO: DELETE THIS IF NUM PICKER WORKS
-                //Get duration hours and minutes
-                //int hour = simpleTimePicker.getCurrentHour();
-                //int min = simpleTimePicker.getCurrentMinute();
+                    //Test switch status
+                    Log.d(TAG, "Required status: " + addAttraction.isReq);
 
-                //Set duration hours and minutes
-                int hour = hourPicker.getValue();
-                int min = minPicker.getValue();
+                    //TODO: DELETE THIS IF NUM PICKER WORKS
+                    //Get duration hours and minutes
+                    //int hour = simpleTimePicker.getCurrentHour();
+                    //int min = simpleTimePicker.getCurrentMinute();
 
-                //Calculate minutes total & set to duration for addAttraction
-                int totalMin = hour*60 + min;
-                addAttraction.duration = totalMin;
+                    //Set duration hours and minutes
+                    int hour = hourPicker.getValue();
+                    int min = minPicker.getValue();
 
-                //TESTING FOR DURATION TIMEPICKER
-                //Log.i(TAG, "HOUR: " + hour );
-                //Log.i(TAG, "MIN: " + min );
+                    //Calculate minutes total & set to duration for addAttraction
+                    int totalMin = hour * 60 + min;
+                    addAttraction.duration = totalMin;
 
-
-                //Test duration result
-                Log.d(TAG, "Duration: " + addAttraction.duration);
+                    //TESTING FOR DURATION TIMEPICKER
+                    //Log.i(TAG, "HOUR: " + hour );
+                    //Log.i(TAG, "MIN: " + min );
 
 
-
-                //TODO: send info back to EditTrip
-                //Attraction attr = new Attraction(addAttraction.placeLatLng, addAttraction.placeID,
-                      //  addAttraction.duration, addAttraction.placeName);
+                    //Test duration result
+                    Log.d(TAG, "Duration: " + addAttraction.duration);
 
 
+                    //TODO: send info back to EditTrip
+                    //Attraction attr = new Attraction(addAttraction.placeLatLng, addAttraction.placeID,
+                    //  addAttraction.duration, addAttraction.placeName);
 
-                double placeLat = addAttraction.placeLatLng.latitude;
-                double placelng = addAttraction.placeLatLng.longitude;
+
+                    double placeLat = addAttraction.placeLatLng.latitude;
+                    double placelng = addAttraction.placeLatLng.longitude;
 
 
-                setResult(1, new Intent().putExtra("placeLat", placeLat)
-                        .putExtra("placeID", addAttraction.placeID)
-                        .putExtra("duration", addAttraction.duration)
-                        .putExtra("placeName", addAttraction.placeName)
-                        .putExtra("placeLng", placelng)
-                        .putExtra("isRequired", addAttraction.isReq));
-                finish();
-
-                /**if(validateInputs(placeExists[0]) == true){
                     setResult(1, new Intent().putExtra("placeLat", placeLat)
                             .putExtra("placeID", addAttraction.placeID)
                             .putExtra("duration", addAttraction.duration)
@@ -167,11 +158,25 @@ public class AddAttractionActivity extends AppCompatActivity {
                             .putExtra("placeLng", placelng)
                             .putExtra("isRequired", addAttraction.isReq));
                     finish();
-                }else{
+
+                    /**if(validateInputs(placeExists[0]) == true){
+                     setResult(1, new Intent().putExtra("placeLat", placeLat)
+                     .putExtra("placeID", addAttraction.placeID)
+                     .putExtra("duration", addAttraction.duration)
+                     .putExtra("placeName", addAttraction.placeName)
+                     .putExtra("placeLng", placelng)
+                     .putExtra("isRequired", addAttraction.isReq));
+                     finish();
+                     }else{
+                     Toast toast = Toast.makeText(getApplicationContext(), "Must Enter Attraction Location", Toast.LENGTH_LONG);
+                     toast.setGravity(Gravity.CENTER, 0, 0);
+                     toast.show();
+                     }**/
+                } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "Must Enter Attraction Location", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-                }**/
+                }
 
 
             }

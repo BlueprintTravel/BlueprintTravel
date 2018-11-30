@@ -177,12 +177,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
 
     public boolean validateInputs(ArrayList<Attraction> attractions , String startLocation){
-        if (startLocation == null){
+       /** if (startLocation == null){
             Toast toast = Toast.makeText(getApplicationContext(),"Must Enter Starting Location", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0,0);
             toast.show();
             return false;
-        }else if(attractions.size() < 1){
+        }else **/
+            if(attractions.size() < 1){
             Toast toast = Toast.makeText(getApplicationContext(),"Must Add At Least One Attraction", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0,0);
             toast.show();

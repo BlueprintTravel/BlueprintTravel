@@ -94,7 +94,8 @@ public class MapActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer
+                        (GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);

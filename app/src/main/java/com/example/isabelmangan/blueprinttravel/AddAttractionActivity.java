@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -70,14 +71,30 @@ public class AddAttractionActivity extends AppCompatActivity {
         });
 
         //Initiate a Switch for required state
-        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
+       final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
         simpleSwitch.setChecked(false);
 
-        //final RadioGroup rb = (RadioGroup) findViewById(R.id.radioGroup);
 
-        final TimePicker simpleTimePicker=(TimePicker)findViewById(R.id.simpleTimePicker); // initiate a time picker
-        // set the value for current hours
-        simpleTimePicker.setIs24HourView(true); // set 24 hours mode for the time picker
+       //Define number pickers
+        final NumberPicker hourPicker = findViewById(R.id.hourPicker);
+        final NumberPicker minPicker = findViewById(R.id.minPicker);
+
+        //minPicker.setDisplayedValues(null);
+
+        //set min and max for hour clock
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(5);
+
+
+        //set min and max for min clock
+        minPicker.setMinValue(0);
+        minPicker.setMaxValue(59);
+        //minPicker.setDisplayedValues(new String[]{"0", "15", "30", "45"});
+
+
+        hourPicker.setValue(1); //set default hour
+        minPicker.setValue(30); //set default min
+
 
 
         //Add Attraction Button
@@ -92,11 +109,16 @@ public class AddAttractionActivity extends AppCompatActivity {
                 //Test switch status
                 Log.d(TAG, "Required status: " + addAttraction.isReq);
 
+                //TODO: DELETE THIS IF NUM PICKER WORKS
                 //Get duration hours and minutes
-                int hour = simpleTimePicker.getCurrentHour();
-                int min = simpleTimePicker.getCurrentMinute();
+                //int hour = simpleTimePicker.getCurrentHour();
+                //int min = simpleTimePicker.getCurrentMinute();
 
-                //TODO: Calculate minutes total & set to duration for addAttraction
+                //Set duration hours and minutes
+                int hour = hourPicker.getValue();
+                int min = minPicker.getValue();
+
+                //Calculate minutes total & set to duration for addAttraction
                 int totalMin = hour*60 + min;
                 addAttraction.duration = totalMin;
 

@@ -49,7 +49,7 @@ public class FirebaseHandler {
      * Initializes Firestore db
      * sets the local db variaable when this class is instantiated
      */
-    public  void setUpFirestore() {
+    public void setUpFirestore() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -58,7 +58,7 @@ public class FirebaseHandler {
      * Initializes Firebase Authentication
      * @return authentication key
      */
-    public  FirebaseAuth getAuth() {
+    public FirebaseAuth getAuth() {
         mAuth = FirebaseAuth.getInstance();
         return mAuth;
     }
@@ -117,7 +117,7 @@ public class FirebaseHandler {
      * @param tripName the name of the trip the attraction should be added to
      * @param newLocation the map of the new attraction location to be added to the trip
      */
-    public  void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
+    private void getCurrentTrip(final String tripName, final Map<String, Object> newLocation) {
         setUpFirestore();
         db.collection("users")
                 .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
@@ -180,17 +180,17 @@ public class FirebaseHandler {
      * Adds attractions to a trip
      * Creates a map object of each attraction in the attractions list and then calls getCurrentTrip
      * on each attraction in order to actually add it to the right trip.
-     * @param attractions the list of attractions (name, duration, placeID, isRequired, LatLng)
-     * @param trip the name of the trip these attractions should be added to in the db
+     * @param attraction the list of attractions (name, duration, placeID, isRequired, LatLng)
+
      */
-    public  void addAttractions(ArrayList<Attraction> attractions, Map<String, Object> trip){
+    public  void addAttractions(Attraction attraction){
         setUpFirestore();
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
           //      .document(tripID).collection("locations");
-        for (int i = 0; i < attractions.size(); i++) {
-            GeoPoint geoPoint = new GeoPoint(attractions.get(i).placeLatLng.latitude, attractions.get(i).placeLatLng.longitude);
-            Attraction currentPlace = attractions.get(i);
+
+            GeoPoint geoPoint = new GeoPoint(attraction.placeLatLng.latitude, attraction.placeLatLng.longitude);
+            Attraction currentPlace = attraction;
             Map<String, Object> newLocation = new HashMap<>();
             newLocation.put("locationName", currentPlace.placeName);
             newLocation.put("duration", currentPlace.duration);
@@ -205,11 +205,6 @@ public class FirebaseHandler {
 
 
 
-
-
-        }
-
-
     }
 
     /**
@@ -222,7 +217,7 @@ public class FirebaseHandler {
      *                trip name, location, and latlng
      */
 
-    public  void getCurrentUser(final Map<String, Object> newTrip) {
+    private void getCurrentUser(final Map<String, Object> newTrip) {
 
         setUpFirestore();
         db.collection("users")
@@ -267,7 +262,7 @@ public class FirebaseHandler {
      * @param LocationName the location of the trip that should be stored
      * @param LocationLatLng the latlng location of the trip that should be stored
      */
-    public  void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
+    public void addTrip(String tripName, String LocationName, LatLng LocationLatLng) {
 
         setUpFirestore();
 
@@ -389,6 +384,98 @@ public class FirebaseHandler {
 
                                                                                 Log.d(TAG,  "!!! attraction name !!!" + locationName);
                                                                                 callback.onCallback(attrNameList);
+
+                                                                            }
+
+                                                                        } else {
+                                                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                                                        }
+
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+    /**
+     * Gets the list of attractions for a specific trip in the database- for use in routemapActivity
+     *
+     * @param tripName the name of the trip that locations are shown for
+     * @param callback the interface to send the location names
+     */
+    public void getAttractionsForCurrentTrip(final String tripName, AttractionsCallback callback) {
+        setUpFirestore();
+        final ArrayList<Attraction> attrList = new ArrayList<>();
+
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+
+                                                        db.collection("users").document(userRef).collection("trips").
+                                                                document(tripID).collection("locations").
+                                                                get().
+                                                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                                String placeName = document.getData().get("locationName").toString();
+                                                                                //LatLng placeLatLng = document.getData().get("LatLng").toString();
+
+                                                                                GeoPoint gp = document.getGeoPoint("LatLng");
+                                                                                LatLng placeLatLng = new LatLng(gp.getLatitude(),gp.getLongitude());
+
+                                                                                String placeID = document.getData().get("placeID").toString();
+                                                                                String durationString = document.getData().get("duration").toString();
+                                                                                int duration = Integer.parseInt(durationString);
+
+                                                                                Boolean isReq = document.getBoolean("isRequired");
+
+                                                                                Attraction attr = new Attraction(placeLatLng, placeID, duration, placeName,  tripName, isReq);
+
+                                                                                attrList.add(attr);
+
+                                                                                Log.d(TAG, "inside size is : " + attrList.size());
+
+                                                                                callback.onCallback(attrList);
 
                                                                             }
 

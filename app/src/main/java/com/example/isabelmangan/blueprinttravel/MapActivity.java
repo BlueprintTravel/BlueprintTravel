@@ -112,10 +112,8 @@ public class MapActivity extends AppCompatActivity implements
         // Handle action bar actions click -- swap UI fragments
         switch (item.getItemId()) {
             case R.id.nav_myTrips:
-                //TODO: go to myTrips activity/fragment
-                return true;
-            case R.id.nav_favorites:
-                //TODO: go to favorites activity/fragment
+                Intent intent = new Intent (this, MyTripsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.nav_homepage:
                 return true;

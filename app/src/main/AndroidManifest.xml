@@ -47,7 +47,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
         <activity
             android:name=".AddAttractionActivity"
             android:exported="true"
@@ -83,6 +82,10 @@
             android:label="@string/title_activity_add_restaurant"
             android:parentActivityName=".EditTripActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyTripsActivity"
+            android:parentActivityName=".MapActivity"
+            android:exported="true" />
 
     </application>
 

@@ -89,7 +89,7 @@ public class RouteMapActivity extends AppCompatActivity implements
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionbar.setTitle("ROUTE MAP"); //TODO: map name
+        actionbar.setTitle("Route Map"); //TODO: map name
 
         //Nav Drawer AKA Sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -156,10 +156,8 @@ public class RouteMapActivity extends AppCompatActivity implements
         // Handle action bar actions click -- swap UI fragments
         switch (item.getItemId()) {
             case R.id.nav_myTrips:
-                //TODO: go to myTrips activity/fragment
-                return true;
-            case R.id.nav_favorites:
-                //TODO: go to favorites activity/fragment
+                Intent intentTrips = new Intent (this, MyTripsActivity.class);
+                startActivity(intentTrips);
                 return true;
             case R.id.nav_homepage:
                 Intent intent = new Intent (this, MapActivity.class);

@@ -98,13 +98,17 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
          **/
     }
 
+    public Place getPlace(){
+        return this.place;
+    }
+
     @Override
     public void onError(Status status) {
         // TODO: Handle the error.
         Log.i(TAG, "An error occurred: " + status);
 
-        Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
+//                Toast.LENGTH_SHORT).show();
     }
 
     private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,

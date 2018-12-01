@@ -50,13 +50,13 @@ public class EditTripActivityUnitTest {
         assertThat(firstLogEntry.getLoggerName(), is("com.example.isabelmangan.blueprinttravel.EditTripActivity"));
     }
 
-    @Test
-    public void test2(){
-        EditTripActivity test = new EditTripActivity();
-        test.latlng = new LatLng(5,5);
-        test.generateRoute();
-
-    }
+//    @Test
+//    public void test2(){
+//        EditTripActivity test = new EditTripActivity();
+//        test.latlng = new LatLng(5,5);
+//        test.generateRoute();
+//
+//    }
 
     class TestAppender extends AppenderSkeleton {
         private final List<LoggingEvent> log = new ArrayList<LoggingEvent>();

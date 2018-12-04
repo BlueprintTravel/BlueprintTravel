@@ -581,21 +581,17 @@ public class FirebaseHandler {
                                                         tripID = document.getId();
                                                         //Log.d(TAG, "------" + userRef);
                                                         Log.d(TAG, "tripID is " + tripID);
-                                                        db.collection("users").document(userRef).collection("trips")
-                                                                .document(tripID).collection("startingLocation").add(newLocation)
-                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                    @Override
-                                                                    public void onSuccess(DocumentReference documentReference) {
-                                                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                        //check if has starting location, if so, get doc ref for it and set newLocation. If not, use document().set(newLocation)
+                                                        String startLocationRef = db.collection("users").document(userRef)
+                                                                .collection("trips").document(tripID).collection("startingLocation").getId();
+                                                        if (!startLocationRef.equals("")) {
+                                                            db.collection("users").document(userRef).collection("trips")
+                                                                    .document(tripID).collection("startingLocation").document(startLocationRef).set(newLocation);
+                                                        } else {
+                                                            db.collection("users").document(userRef).collection("trips")
+                                                                    .document(tripID).collection("startingLocation").add(newLocation);
+                                                        }
 
-                                                                    }
-                                                                })
-                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        Log.w(TAG, "Error adding document", e);
-                                                                    }
-                                                                });
                                                     }
                                                 } else {
                                                     Log.d(TAG, "Error getting documents: ", task.getException());

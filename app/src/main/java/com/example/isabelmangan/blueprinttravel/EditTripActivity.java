@@ -64,11 +64,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         FirebaseHandler fbHander = new FirebaseHandler();
         FirebaseUser currUser = fbHander.getCurrentlySignedInUser();
         userID = currUser.getUid();
-        location= getIntent().getStringExtra("TRIP_LOCATION");
         tripName = getIntent().getStringExtra("TRIP_NAME");
 
-        Bundle bundle = getIntent().getParcelableExtra("bundle");
-        latlng = bundle.getParcelable("TRIP_LATLNG");
 
         PlaceAutocompleteFragment autocompleteFragment;
         autocompleteFragment = (PlaceAutocompleteFragment)
@@ -87,6 +84,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 String placeTripName = tripName;
 
                 start = new Attraction(placeLatLng, placeID, placeDuration, placeName, placeTripName, placeIsReq);
+                FirebaseHandler fbHandler = new FirebaseHandler();
+                fbHandler.addStartingLocationToDB(start);
 
             }
 
@@ -150,15 +149,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         //TODO: format better
         // set up the Attractions RecyclerView
-        /**
-        RecyclerView attractionsRecyclerView = findViewById(R.id.attractions_list);
-        LinearLayoutManager horizontalAttrLayoutManager
-                = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        attractionsRecyclerView.setLayoutManager(horizontalAttrLayoutManager);
-        attractionsAdapter = new LocationsRecyclerViewAdapter(this, viewAttrImagesList, attractionNamesList);
-        attractionsAdapter.setClickListener(this);
-        attractionsRecyclerView.setAdapter(attractionsAdapter);
-         **/
+
 
         // set up the Restaurants RecyclerView
         RecyclerView restaurantsRecyclerView = findViewById(R.id.restaurants_list);
@@ -235,20 +226,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                     new Attraction(placeLatLng, placeID, duration, placeName, tripName, isRequired);
             attractions.add(attraction);
 
-            GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);
-
-            Map<String, Object> newTrip = new HashMap<>();
-            newTrip.put("tripName", tripName);
-            newTrip.put("locationName", location);
-            newTrip.put("LocationLatLng", geoPoint);
 
             FirebaseHandler fbHander = new FirebaseHandler();
             fbHander.addAttractions(attraction);
-            for (int i = 0; i < attractions.size(); i++) {
-                Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
-                        + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng
-                        + " duration is " + attractions.get(i).duration);
-            }
+
 
         }
         addNamesFromDB();
@@ -285,45 +266,18 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
      * Generates the trip's route
      */
     public void generateRoute() {
-        FirebaseHandler fbHandler = new FirebaseHandler();
-        fbHandler.addStartingLocationToDB(start);
+
 
 
         //TODO: database stuff to take lists of attractions & restaurants and generate the route
-        GeoPoint geoPoint = new GeoPoint(latlng.latitude, latlng.longitude);
 
 
-        Map<String, Object> newTrip = new HashMap<>();
-        newTrip.put("tripName", tripName);
-        newTrip.put("locationName", location);
-        newTrip.put("LocationLatLng", geoPoint);
 
-        //FirebaseHandler fbHander = new FirebaseHandler();
-        //fbHander.addAttractions(attractions, newTrip);
-        /**
-        for (int i = 0; i < attractions.size(); i++) {
-            Log.d("mytag", "attraction " + i + " is " + attractions.get(i).placeName
-            + " placeID: " + attractions.get(i).placeID + " lat/long is " + attractions.get(i).placeLatLng
-            + " duration is " + attractions.get(i).duration);
-        }
-         **/
 
-        Bundle args = new Bundle();
-        args.putParcelable("TRIP_LATLNG", latlng);
 
         Intent intent = new Intent(this, RouteMapActivity.class);
-        intent.putExtra("TRIP_LOCATION", location);
+
         intent.putExtra("TRIP_NAME", tripName);
-        intent.putExtra("bundle", args);
-
-        intent.putExtra("ATTRACTION_LIST_SIZE", attractions.size());
-        Bundle newargs = new Bundle();
-        for (int i = 0; i < attractions.size(); i++) {
-            newargs.putParcelable("LOC_LATLNG" + i, attractions.get(i).placeLatLng);
-        }
-        intent.putExtra("bundle2", newargs);
-
-
 
         //TODO: progress bar
         startActivity(intent);

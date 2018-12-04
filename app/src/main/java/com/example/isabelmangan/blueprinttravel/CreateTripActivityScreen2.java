@@ -53,13 +53,10 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
     public void updatePage() {
         Log.d(TAG, "trip name: " + tripName);
-        Bundle args = new Bundle();
-        args.putParcelable("TRIP_LATLNG", latlng);
+
 
         Intent intent = new Intent (this, EditTripActivity.class);
-        intent.putExtra("TRIP_LOCATION", location);
         intent.putExtra("TRIP_NAME", tripName);
-        intent.putExtra("bundle", args);
         startActivity(intent);
     }
 }

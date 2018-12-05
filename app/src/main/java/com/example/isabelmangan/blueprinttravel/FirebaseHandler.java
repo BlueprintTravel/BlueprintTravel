@@ -475,9 +475,10 @@ public class FirebaseHandler {
 
                                                                                 Log.d(TAG, "inside size is : " + attrList.size());
 
-                                                                                callback.onCallback(attrList);
+
 
                                                                             }
+                                                                            callback.onCallback(attrList);
 
                                                                         } else {
                                                                             Log.w(TAG, "Error getting documents.", task.getException());

@@ -207,12 +207,14 @@ public class RouteMapActivity extends AppCompatActivity implements
     }
 
     public void addPlacesFromDB() {
+        Log.d("testing", "currently here again testing123");
         FirebaseHandler fbHandler = new FirebaseHandler();
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
                 .build();
         fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
                     public void onCallback(ArrayList<Attraction> attr) {
+                        Log.d("testing", "currently here again testing12345");
                         ArrayList<Attraction> attrList = new ArrayList<>();
 
                         for (int i = attr.size()-1; i >= 0; i--) {
@@ -251,6 +253,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                         }
 
                         int curr = 540;
+
                         for (int i = 0; i < attrList.size(); i++) {
                             String placeId = attrList.get(i).getPlaceID();
                             int duration = attrList.get(i).getDuration();
@@ -402,9 +405,14 @@ public class RouteMapActivity extends AppCompatActivity implements
                                 Log.d("emailpassword", "optimized route is " + optimizedRoute.get(i));
 
                                 optimizedAttrList.add(attrList.get(optimizedRoute.get(i)));
+
+                            }
+                            for (int i = 0; i < optimizedAttrList.size(); i++) {
+                                Log.d("emailpassword", optimizedAttrList.get(i).getPlaceName());
                             }
 
                         }
+
                         List<String> optimizedPlaces = new ArrayList<>();
                         if (optimizedAttrList != null) {
                             for (int i = 0; i < optimizedAttrList.size(); i++) {
@@ -446,7 +454,9 @@ public class RouteMapActivity extends AppCompatActivity implements
                                         for (int i = 0; i < latLngs.size(); i++) {
                                             mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
                                         }
-
+                                        for (int i = 0; i < myplaces.size(); i++) {
+                                            Log.d("emailpassword", "myPlaces is " + myplaces.get(i));
+                                        }
 
 
                                         for(int p = 0; p < myplaces.size()-1; p++) {

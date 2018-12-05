@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,31 +24,24 @@ public class MyTripsActivity extends AppCompatActivity implements MyTripsRecycle
     private DrawerLayout drawerLayout;
     MyTripsRecyclerViewAdapter adapter;
 
-
+    ArrayList<String> tripDisplayNames = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_trips);
 
         // data to populate the RecyclerView with
+        /**
         ArrayList<String> tripNames = new ArrayList<>();
         tripNames.add("Lily & Lindsey in Paris");
         tripNames.add("UD goes to Chicago!");
         tripNames.add("Bugh - Cali");
         tripNames.add("Trip2");
         tripNames.add("Adventures abroad");
-
+        */
         // set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.rvTrips);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new MyTripsRecyclerViewAdapter(this, tripNames);
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
 
+        addNamesFromDB();
 
         //Customized Toolbar for menu button support
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
@@ -69,6 +63,34 @@ public class MyTripsActivity extends AppCompatActivity implements MyTripsRecycle
                     }
                 });
     }
+
+    public void addNamesFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getTripNamesForCurrentUser(new TripNamesCallback() {
+
+            @Override
+            public void onCallback(ArrayList<String> tripNames) {
+                tripDisplayNames = tripNames;
+
+
+                //All logic needs to happen here!
+                RecyclerView recyclerView = findViewById(R.id.rvTrips);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MyTripsActivity.this);
+                recyclerView.setLayoutManager(layoutManager);
+                adapter = new MyTripsRecyclerViewAdapter(MyTripsActivity.this, tripNames);
+                adapter.setClickListener(MyTripsActivity.this);
+                recyclerView.setAdapter(adapter);
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                        layoutManager.getOrientation());
+                recyclerView.addItemDecoration(dividerItemDecoration);
+
+
+            }
+        });
+
+
+    }
+
 
     @Override
     public void onItemClick(View view, int position) {

@@ -30,16 +30,7 @@ public class MyTripsActivity extends AppCompatActivity implements MyTripsRecycle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_trips);
 
-        // data to populate the RecyclerView with
-        /**
-        ArrayList<String> tripNames = new ArrayList<>();
-        tripNames.add("Lily & Lindsey in Paris");
-        tripNames.add("UD goes to Chicago!");
-        tripNames.add("Bugh - Cali");
-        tripNames.add("Trip2");
-        tripNames.add("Adventures abroad");
-        */
-        // set up the RecyclerView
+
 
         addNamesFromDB();
 
@@ -94,7 +85,12 @@ public class MyTripsActivity extends AppCompatActivity implements MyTripsRecycle
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, RouteMapActivity.class);
+
+        intent.putExtra("TRIP_NAME", adapter.getItem(position));
+
+        startActivity(intent);
     }
 
     @Override

@@ -246,7 +246,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                             Log.d("emailpassword- routeMap", "attrList number " + i + " is :" + attrList.get(i).getPlaceName());
                         }
 
-                        if (attr.size() >= 0) {
+                        if (attr.size() > 0) {
                             actionbar.setTitle(attr.get(0).getTripName());
                         } else {
                             actionbar.setTitle("Trip");
@@ -397,7 +397,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                         //TODO: call the algorithm
 
                         Algo algo = new Algo();
-                        ArrayList<Integer> optimizedRoute = new ArrayList<>();
+                        ArrayList<Integer> optimizedRoute;
                         optimizedRoute = algo.generateOptimizedRoute(540, open, close, walking_time, time_spent);
                         ArrayList<Attraction> optimizedAttrList = new ArrayList<>();
                         if (optimizedRoute != null) {
@@ -413,6 +413,7 @@ public class RouteMapActivity extends AppCompatActivity implements
 
                         }
 
+
                         List<String> optimizedPlaces = new ArrayList<>();
                         if (optimizedAttrList != null) {
                             for (int i = 0; i < optimizedAttrList.size(); i++) {
@@ -424,6 +425,9 @@ public class RouteMapActivity extends AppCompatActivity implements
                         if (attrList.size() == 1) {
                             String ll = attrList.get(0).getLatLng().latitude + "," + attrList.get(0).getLatLng().longitude;
                             optimizedPlaces.add(ll);
+                        }
+                        if (optimizedPlaces.size() <= 0){
+                            Toast.makeText(RouteMapActivity.this, "No route found", Toast.LENGTH_LONG).show();
                         }
                         List<LatLng> path = new ArrayList();
 

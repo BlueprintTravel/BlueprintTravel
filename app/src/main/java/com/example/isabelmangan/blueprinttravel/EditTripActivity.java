@@ -259,7 +259,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
-                + " on item position " + position, Toast.LENGTH_SHORT).show();
+                + " on item position " + position, Toast.LENGTH_SHORT);
     }
 
     /**

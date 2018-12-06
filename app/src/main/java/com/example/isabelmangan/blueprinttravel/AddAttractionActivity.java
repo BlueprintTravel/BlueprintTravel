@@ -72,7 +72,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
-        simpleSwitch.setChecked(false);
+        simpleSwitch.setChecked(true);
 
 
        //Define number pickers

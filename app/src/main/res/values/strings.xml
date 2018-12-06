@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">BlueprintTravel</string>
-    <string name="title_activity_login">Sign In</string>
+    <string name="title_activity_login">Blueprint</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

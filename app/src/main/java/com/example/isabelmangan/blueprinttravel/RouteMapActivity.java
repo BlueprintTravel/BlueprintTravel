@@ -434,7 +434,7 @@ public class RouteMapActivity extends AppCompatActivity implements
 
                         fbHandler.getStarLocationForCurrentTrip(tripName, new StartLocationCallback() {
                                     public void onCallback(ArrayList<Attraction> startLocation) {
-                                        if(startLocation != null) {
+                                        if(startLocation != null && startLocation.size() > 0) {
                                             Log.d("emailpassword", "start location isnt null");
                                             LatLng startLatLng = startLocation.get(0).getLatLng();
                                             //startll.add(startLatLng);
@@ -445,6 +445,8 @@ public class RouteMapActivity extends AppCompatActivity implements
                                             Log.d("emailpassword", "my places zero is " + optimizedPlaces.get(0));
 
 
+                                        } else {
+                                            Log.d("emailpassword", "starting location is null");
                                         }
                                         List<String> myplaces = optimizedPlaces;
                                         for (int i = 0; i < myplaces.size(); i++) {
@@ -467,6 +469,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                                             DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1)).mode(TravelMode.WALKING);
                                             try {
                                                 DirectionsResult res = req.await();
+
 
                                                 //Loop through legs and steps to get encoded polylines of each step
                                                 if (res.routes != null && res.routes.length > 0) {

@@ -11,7 +11,12 @@ class Algo {
     public static ArrayList<Integer> generateOptimizedRoute(int curr, int[] open, int[] close,
                                                             long[][] walking_time, int[] time_spent)
     {
-        int[] visited = {0,0,0,0};
+//      int[] visited = {0,0,0,0};
+        int visited[] = new int[open.length];
+        for (int i = 0; i < visited.length - 1; i++)
+        {
+            visited[i] = 0;
+        }
         // Calculate the location with lea}st H, which is also open
         // H = curr_close * (walking time + time spent)
 

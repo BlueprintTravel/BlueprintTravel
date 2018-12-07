@@ -240,6 +240,9 @@ public class RouteMapActivity extends AppCompatActivity implements
                         long[][] walking_time = new long[size][size];
                         int[] time_spent = new int[size];
 
+//                        ArrayList<Integer> open = new ArrayList<>();
+//                        ArrayList<Integer> close = new ArrayList<>();
+
                         //TODO: all logic needs to happen here!!
                         //attrList holds a list of attractions for the current trip
                         for (int i = 0; i < attrList.size(); i++) {

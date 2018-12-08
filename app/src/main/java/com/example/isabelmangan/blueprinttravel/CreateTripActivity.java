@@ -72,6 +72,7 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
 
         Intent intent = new Intent (this, CreateTripActivityScreen2.class);
         intent.putExtra("TRIP_LOCATION", place.getName());
+        intent.putExtra("TRIP_LATLNG",place.getLatLng());
         intent.putExtra("bundle", args);
         startActivity(intent);
     }

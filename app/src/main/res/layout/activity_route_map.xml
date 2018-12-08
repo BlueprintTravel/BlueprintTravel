@@ -35,6 +35,22 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/create_trip_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="46dp"
+            android:background="#359c5e"
+            android:padding="8dp"
+            android:text="@string/create_trip"
+            android:textColor="#ffffff" />
+
+        <Button
             android:id="@+id/edit_trip_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

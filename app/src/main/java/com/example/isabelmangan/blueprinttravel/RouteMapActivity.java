@@ -133,6 +133,14 @@ public class RouteMapActivity extends AppCompatActivity implements
             }
         });
 
+        Button mCreateTripButton = (Button) findViewById(R.id.create_trip_button);
+        mCreateTripButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeUIToCreateTrip();
+            }
+        });
+
 
         tripName = getIntent().getStringExtra("TRIP_NAME");
 
@@ -607,6 +615,12 @@ public class RouteMapActivity extends AppCompatActivity implements
         Log.d(TAG, "Enter Edit Trip");
         Intent intent = new Intent (this, EditTripActivity.class);
         intent.putExtra("TRIP_NAME", tripName);
+        startActivity(intent);
+    }
+
+    public void changeUIToCreateTrip() {
+        Intent intent = new Intent (this, CreateTripActivity.class);
+        //intent.putExtra("TRIP_NAME", tripName);
         startActivity(intent);
     }
 }

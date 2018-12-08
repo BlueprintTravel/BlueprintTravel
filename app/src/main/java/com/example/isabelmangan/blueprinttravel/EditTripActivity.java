@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -17,6 +19,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -65,6 +69,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         FirebaseUser currUser = fbHander.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
+        //LatLngBounds bounds = toBounds(getIntent().getParcelableExtra("TRIP_LATLNG"),100);
 
 
         PlaceAutocompleteFragment autocompleteFragment;
@@ -96,6 +101,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             }
         });
         autocompleteFragment.setHint("Enter Starting Location of Trip");
+        //autocompleteFragment.setBoundsBias(bounds);
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -163,11 +169,31 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         final Button generateRouteButton = findViewById(R.id.generate_route_button);
         generateRouteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                generateRoute();
+                if(start != null && DbAttractionList.size() > 0){
+                    generateRoute();
+                }else if(start == null && DbAttractionList.size() <= 0){
+                    Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
+                            Toast.LENGTH_LONG).show();
+                }else if(start != null){
+                    Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
 
+    public LatLngBounds toBounds(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
+    }
 
     public void addNamesFromDB() {
         FirebaseHandler fbHandler = new FirebaseHandler();

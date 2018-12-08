@@ -383,9 +383,10 @@ public class FirebaseHandler {
                                                                                 Log.d(TAG, "inside size is : " + attrNameList.size());
 
                                                                                 Log.d(TAG,  "!!! attraction name !!!" + locationName);
-                                                                                callback.onCallback(attrNameList);
+
 
                                                                             }
+                                                                            callback.onCallback(attrNameList);
 
                                                                         } else {
                                                                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -396,6 +397,47 @@ public class FirebaseHandler {
                                                                 });
 
                                                     }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+    public  void getTripNamesForCurrentUser(TripNamesCallback callback) {
+        setUpFirestore();
+        final ArrayList<String> tripNamesList = new ArrayList<>();
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        String tripName = document.getData().get("tripName").toString();
+                                                        tripNamesList.add(tripName);
+                                                    }
+                                                    callback.onCallback(tripNamesList);
                                                 }
                                             }
                                         });

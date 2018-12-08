@@ -71,6 +71,7 @@ class Algo {
         {
             if (i == path.size() -1)
                 Log.d("emailpassword", "path size is " + path.get(i));
+
             else
                 Log.d("emailpassword", "path size is " + path.get(i)+" --> ");
 

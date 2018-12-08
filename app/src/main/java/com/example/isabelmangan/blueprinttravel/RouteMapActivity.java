@@ -249,7 +249,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                             Log.d("emailpassword- routeMap", "attrList number " + i + " is :" + attrList.get(i).getPlaceName());
                         }
 
-                        if (attr.size() >= 0) {
+                        if (attr.size() > 0) {
                             actionbar.setTitle(attr.get(0).getTripName());
                         } else {
                             actionbar.setTitle("Trip");
@@ -400,7 +400,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                         //TODO: call the algorithm
 
                         Algo algo = new Algo();
-                        ArrayList<Integer> optimizedRoute = new ArrayList<>();
+                        ArrayList<Integer> optimizedRoute;
                         optimizedRoute = algo.generateOptimizedRoute(540, open, close, walking_time, time_spent);
                         ArrayList<Attraction> optimizedAttrList = new ArrayList<>();
                         if (optimizedRoute != null) {
@@ -416,6 +416,7 @@ public class RouteMapActivity extends AppCompatActivity implements
 
                         }
 
+
                         List<String> optimizedPlaces = new ArrayList<>();
                         if (optimizedAttrList != null) {
                             for (int i = 0; i < optimizedAttrList.size(); i++) {
@@ -428,12 +429,15 @@ public class RouteMapActivity extends AppCompatActivity implements
                             String ll = attrList.get(0).getLatLng().latitude + "," + attrList.get(0).getLatLng().longitude;
                             optimizedPlaces.add(ll);
                         }
+                        if (optimizedPlaces.size() <= 0){
+                            Toast.makeText(RouteMapActivity.this, "No route found", Toast.LENGTH_LONG).show();
+                        }
                         List<LatLng> path = new ArrayList();
 
 
                         fbHandler.getStarLocationForCurrentTrip(tripName, new StartLocationCallback() {
                                     public void onCallback(ArrayList<Attraction> startLocation) {
-                                        if(startLocation != null) {
+                                        if(startLocation != null && startLocation.size() > 0) {
                                             Log.d("emailpassword", "start location isnt null");
                                             LatLng startLatLng = startLocation.get(0).getLatLng();
                                             //startll.add(startLatLng);
@@ -444,6 +448,8 @@ public class RouteMapActivity extends AppCompatActivity implements
                                             Log.d("emailpassword", "my places zero is " + optimizedPlaces.get(0));
 
 
+                                        } else {
+                                            Log.d("emailpassword", "starting location is null");
                                         }
                                         List<String> myplaces = optimizedPlaces;
                                         for (int i = 0; i < myplaces.size(); i++) {
@@ -466,6 +472,7 @@ public class RouteMapActivity extends AppCompatActivity implements
                                             DirectionsApiRequest req = DirectionsApi.getDirections(context, myplaces.get(p), myplaces.get(p+1)).mode(TravelMode.WALKING);
                                             try {
                                                 DirectionsResult res = req.await();
+
 
                                                 //Loop through legs and steps to get encoded polylines of each step
                                                 if (res.routes != null && res.routes.length > 0) {

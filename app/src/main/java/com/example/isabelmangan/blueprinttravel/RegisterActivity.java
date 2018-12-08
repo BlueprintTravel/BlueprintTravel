@@ -101,8 +101,21 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         mEmailSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptSignUp();
-                //back end here? call create user?
+                if(mEmailView.getText().toString().equals("") || mPasswordView.getText().toString().equals("")){
+                    Toast.makeText(getBaseContext(), "Cannot Register with no information",
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    attemptSignUp();
+                }
+            }
+        });
+
+        //Back Button
+        Button mBackButton = (Button) findViewById(R.id.register_to_login_button);
+        mBackButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               returnToLogin();
             }
         });
 
@@ -129,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                            Toast.makeText(RegisterActivity.this, "Registration Failed",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -145,6 +158,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         fbHander.setUpFirestore();
         fbHander.addUser();
 
+    }
+
+    public void returnToLogin(){
+        Intent intent = new Intent (this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void updateUI(FirebaseUser currentUser) {
@@ -187,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        createUser(email, password);
+
 
         boolean cancel = false;
         View focusView = null;
@@ -197,8 +215,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        }else if(!isPasswordValid(password)) {
+            Toast.makeText(getBaseContext(), "Please enter a password with at least 4 characters.",
+                    Toast.LENGTH_LONG).show();
             focusView = mPasswordView;
             cancel = true;
         }
@@ -208,10 +227,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+        }else if(!isEmailValid(email)){
+            Toast.makeText(getBaseContext(), "Please enter a valid email.",
+                    Toast.LENGTH_LONG).show();
             focusView = mEmailView;
             cancel = true;
+
         }
 
         if (cancel) {
@@ -221,6 +242,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            createUser(email, password);
             showProgress(true);
             mAuthTask = new UserSignUpTask(email, password);
             mAuthTask.execute((Void) null);

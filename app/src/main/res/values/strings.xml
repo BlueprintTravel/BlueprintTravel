@@ -18,9 +18,11 @@
     <!-- end Strings related to login -->
     <string name="title_activity_map">Map</string>
     <string name="title_activity_log_in">Log In</string>
+    <string name="back_to_log_in">Return to Log In Screen</string>
     <string name="register_new_user">Register</string>
     <string name="create_trip">Create Trip</string>
     <string name="places_search_intro_message">Enter Trip Location</string>
+    <string name="password_hint">Password-At least 4 characters</string>
 
 
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>

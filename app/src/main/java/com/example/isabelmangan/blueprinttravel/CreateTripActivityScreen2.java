@@ -8,6 +8,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,18 +36,23 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tripName = mTripName.getText().toString();
-                //TODO: trip name to database
-                //FirebaseHandler.setUpFirestore();
-                FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
-                userID = currUser.getUid();
-                location= getIntent().getStringExtra("TRIP_LOCATION");
+                if(mTripName.getText().toString().equals("")){
+                    Toast.makeText(getBaseContext(), "Please name your trip",
+                            Toast.LENGTH_LONG).show();
+                }else {
+                    tripName = mTripName.getText().toString();
+                    //TODO: trip name to database
+                    //FirebaseHandler.setUpFirestore();
+                    FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
+                    userID = currUser.getUid();
+                    location = getIntent().getStringExtra("TRIP_LOCATION");
 
-                Bundle bundle = getIntent().getParcelableExtra("bundle");
-                latlng = bundle.getParcelable("TRIP_LATLNG");
-                Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
-                fbHandler.addTrip(tripName, location, latlng);
-                updatePage();
+                    Bundle bundle = getIntent().getParcelableExtra("bundle");
+                    latlng = bundle.getParcelable("TRIP_LATLNG");
+                    Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
+                    fbHandler.addTrip(tripName, location, latlng);
+                    updatePage();
+                }
             }
         });
     }

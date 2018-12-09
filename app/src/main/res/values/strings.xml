@@ -64,5 +64,6 @@
     <string name="prompt_trip_starting_loc">Enter Your Trip\'s Starting Location</string>
     <string name="title_activity_my_trips">MyTripsActivity</string>
     <string name="my_trips_title">My Trips</string>
+    <string name="trip_loc_description">This is the city or neighborhood where your desired trip will take place.</string>
 
 </resources>

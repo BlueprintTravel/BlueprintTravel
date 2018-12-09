@@ -34,6 +34,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MyAttraction";
+    Attraction addAttraction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,9 @@ public class AddAttractionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Create a new attraction object
-        final Attraction addAttraction = new Attraction();
+        addAttraction = new Attraction();
+
+
 
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)

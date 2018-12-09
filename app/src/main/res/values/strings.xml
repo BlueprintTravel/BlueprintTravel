@@ -65,4 +65,8 @@
     <string name="title_activity_my_trips">MyTripsActivity</string>
     <string name="my_trips_title">My Trips</string>
 
+    <string name="title_activity_edit_attraction">EditAttractionActivity</string>
+    <string name="edit_attraction">Edit Attraction</string>
+    <string name="curr_edit_attraction">Editing:</string>
+
 </resources>

@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -94,8 +95,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 if(mEmailView.getText().toString().equals("") || mPasswordView.getText().toString().equals("")){
-                    Toast.makeText(getBaseContext(), "Cannot Login with no information",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Cannot Login with no information",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
                     attemptLogin();
                 }
@@ -152,8 +155,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            for(int i = 0; i < 3; i++){
+                                Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER, 0 ,-530);
+                                toast.show();
+                            }
                             updateUI(null);
                         }
 

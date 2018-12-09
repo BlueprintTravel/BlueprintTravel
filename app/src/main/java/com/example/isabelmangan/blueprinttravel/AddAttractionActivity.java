@@ -158,6 +158,16 @@ public class AddAttractionActivity extends AppCompatActivity {
             }
         });
 
+        Button mCancelAddAttrButton = (Button) findViewById(R.id.cancel_add_attr);
+        mCancelAddAttrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (this, EditTripActivity.class);
+                intent.putExtra("TRIP_NAME", getIntent().getStringExtra("TRIP_NAME"));
+                startActivity(intent);
+            }
+        });
+
     }
 
 

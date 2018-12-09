@@ -74,10 +74,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/restaurants"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:singleLine="false"
         app:layout_constraintBottom_toTopOf="@+id/generate_route_button"
         app:layout_constraintEnd_toStartOf="@+id/add_restaurant_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,18 +105,19 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/attractions_list"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:singleLine = "false"
         android:scrollbars="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_attraction_button" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurants_list"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"

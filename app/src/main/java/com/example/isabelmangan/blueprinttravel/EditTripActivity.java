@@ -257,6 +257,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             fbHander.addAttractions(attraction);
 
 
+        } else if (requestCode == -1) {
+            Toast.makeText(this, "TEST", Toast.LENGTH_LONG);
         }
         addNamesFromDB();
     }
@@ -269,7 +271,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
-            intent.putExtra("TRIP_NAME", tripName)
+            intent.putExtra("TRIP_NAME", tripName);
             startActivityForResult(intent, 1);
 
             //Test to assure proper click

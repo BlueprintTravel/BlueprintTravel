@@ -162,9 +162,12 @@ public class AddAttractionActivity extends AppCompatActivity {
         mCancelAddAttrButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent (this, EditTripActivity.class);
+                Intent intent = new Intent(v.getContext(), EditTripActivity.class);
                 intent.putExtra("TRIP_NAME", getIntent().getStringExtra("TRIP_NAME"));
                 startActivity(intent);
+
+               /*setResult(-1);
+               finish();*/
             }
         });
 

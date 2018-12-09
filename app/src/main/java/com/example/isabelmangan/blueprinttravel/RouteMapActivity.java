@@ -528,10 +528,17 @@ public class RouteMapActivity extends AppCompatActivity implements
                                         if (path.size() > 0) {
                                             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
                                             mMap.addPolyline(opts);
+                                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
+                                        } else {
+                                            for(int i = 0; i < 3; i++) {
+                                                Toast toast = Toast.makeText(getBaseContext(), "No valid route found",
+                                                        Toast.LENGTH_LONG);
+                                                toast.setGravity(Gravity.CENTER, 0, -550);
+                                                toast.show();
+                                            }
                                         }
 
-                                        //TODO: replace capitol with the first myplaces element
-                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
+                                        Log.w("FIREMAP", Integer.toString(path.size()));
 
                                     }
                                 });

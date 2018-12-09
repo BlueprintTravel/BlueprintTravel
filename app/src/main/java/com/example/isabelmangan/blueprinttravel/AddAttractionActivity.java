@@ -148,6 +148,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                             .putExtra("placeName", addAttraction.placeName)
                             .putExtra("placeLng", placelng)
                             .putExtra("isRequired", addAttraction.isReq));
+
                     finish();
                 }else{
                     Toast.makeText(getBaseContext(), "Please enter an Attraction.",

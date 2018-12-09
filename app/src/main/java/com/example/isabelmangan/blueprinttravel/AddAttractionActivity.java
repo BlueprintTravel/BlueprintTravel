@@ -150,8 +150,11 @@ public class AddAttractionActivity extends AppCompatActivity {
                             .putExtra("isRequired", addAttraction.isReq));
                     finish();
                 }else{
-                    Toast.makeText(getBaseContext(), "Please enter an Attraction.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please enter an Attraction.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 }
 
 

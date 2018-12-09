@@ -164,7 +164,7 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT);
+        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT);
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -172,7 +172,7 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG);
+        //Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -221,11 +221,14 @@ public class MapActivity extends AppCompatActivity implements
 
         // Launching the login activity
         Intent intent = new Intent(MapActivity.this, LoginActivity.class);
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        startActivity(intent);
-        toast.show();
+        for(int i = 0; i < 3; i++){
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            startActivity(intent);
+            toast.show();
+        }
+
         finish();
     }
 

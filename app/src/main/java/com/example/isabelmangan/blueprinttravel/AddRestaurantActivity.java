@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -60,10 +61,17 @@ public class AddRestaurantActivity extends AppCompatActivity {
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Send restaurant placeid to database
+                if(addRestaurant.placeid != null) {
+                    //TODO: Send restaurant placeid to database
 
-                //TODO: send info back to EditTrip
-                finish();
+                    //TODO: send info back to EditTrip
+                    finish();
+                }else{
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please enter a Restaurant.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
 
             }
         });

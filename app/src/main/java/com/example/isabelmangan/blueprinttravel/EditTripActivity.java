@@ -172,14 +172,20 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 if(start != null && DbAttractionList.size() > 0){
                     generateRoute();
                 }else if(start == null && DbAttractionList.size() <= 0){
-                    Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else if(start != null){
-                    Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
-                    Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for (int i = 0; i < 3; i++) {
+                        Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
@@ -284,8 +290,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
-                + " on item position " + position, Toast.LENGTH_SHORT);
+        for(int i = 0; i < 3; i++){
+            Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
+                    + " on item position " + position, Toast.LENGTH_SHORT);
+        }
     }
 
     /**

@@ -226,7 +226,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             cancel = true;
         }else if(!isPasswordValid(password)) {
             for(int i = 0; i < 3; i++){
-                Toast toast = Toast.makeText(getBaseContext(), "Please enter a password with at least 4 characters.",
+                Toast toast = Toast.makeText(getBaseContext(), "Please enter a password with at least 5 characters.",
                         Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0 ,-550);
                 toast.show();

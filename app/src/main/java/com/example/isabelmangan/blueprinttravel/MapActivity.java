@@ -232,6 +232,7 @@ public class MapActivity extends AppCompatActivity implements
     public void changeUIToCreateTrip() {
         Log.d(TAG, "Enter Create Trip");
         Intent intent = new Intent (this, CreateTripActivity.class);
+        intent.putExtra ("calling_method","MapActivityOld");
         startActivity(intent);
     }
 }

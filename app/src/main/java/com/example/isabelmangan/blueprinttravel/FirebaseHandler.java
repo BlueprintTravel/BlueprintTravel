@@ -43,6 +43,7 @@ public class FirebaseHandler {
     private  FirebaseFirestore db;
     private  String tripID;
     private  String userRef = "";
+    public   boolean hasStartingLocation = false;
 
 
     /**
@@ -582,7 +583,7 @@ public class FirebaseHandler {
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
         //      .document(tripID).collection("locations");
-
+        this.hasStartingLocation = true;
         GeoPoint geoPoint = new GeoPoint(start.placeLatLng.latitude, start.placeLatLng.longitude);
         Attraction currentPlace = start;
         Map<String, Object> newLocation = new HashMap<>();
@@ -785,10 +786,10 @@ public class FirebaseHandler {
                                                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                        String locationId = document.getId();
-
-                                                                        editAttraction(userRef, tripID, locationId, EditedAttraction );
-
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            String locationId = document.getId();
+                                                                            editAttraction(userRef, tripID, locationId, EditedAttraction );
+                                                                        }
                                                                     }
 
                                                                 });
@@ -810,8 +811,9 @@ public class FirebaseHandler {
     public void editAttraction(String userRef, String tripId, String locationId, Map<String, Object> EditedAttraction) {
         setUpFirestore();
         db.collection("users").document(userRef).collection("trips").document(tripId)
-                .collection("locations").document(locationId).set(EditedAttraction);
+                .collection("locations").document(locationId).update(EditedAttraction);
     }
+
     /**
      * Logs the user out of firebase
      */

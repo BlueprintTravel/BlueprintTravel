@@ -65,8 +65,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
-        FirebaseHandler fbHander = new FirebaseHandler();
-        FirebaseUser currUser = fbHander.getCurrentlySignedInUser();
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
         //LatLngBounds bounds = toBounds(getIntent().getParcelableExtra("TRIP_LATLNG"),100);
@@ -178,8 +178,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                     Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
                             Toast.LENGTH_LONG).show();
                 }else{
-                    Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
-                            Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
+                                Toast.LENGTH_LONG).show();
+
+
                 }
 
             }
@@ -285,7 +287,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
-                + " on item position " + position, Toast.LENGTH_SHORT).show();
+                + " on item position " + position, Toast.LENGTH_SHORT);
         FirebaseHandler fbHandler =  new FirebaseHandler();
         Intent intent = new Intent(this, EditAttractionActivity.class);
         fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
@@ -312,17 +314,6 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             }
         });
 
-        //Log.d("BOB SAGET",DbAttractionList.);
-        //Intent intent = new Intent(this, AddAttractionActivity.class);
-        //Attraction thisAttraction = DbAttractionList.get(position);
-//        Log.d("BOB SAGET",thisAttraction.tripName);
-//        intent.putExtra("LAT_LNG",thisAttraction.getLatLng());
-//        intent.putExtra("PLACE_ID",thisAttraction.getPlaceID());
-//        intent.putExtra("DURATION",thisAttraction.getDuration());
-//        intent.putExtra("PLACE_NAME",thisAttraction.getPlaceName());
-//        intent.putExtra("TRIP_NAME",thisAttraction.getTripName());
-//        intent.putExtra("REQ",thisAttraction.getIsReq());
-        //startActivity(intent);
     }
 
     /**

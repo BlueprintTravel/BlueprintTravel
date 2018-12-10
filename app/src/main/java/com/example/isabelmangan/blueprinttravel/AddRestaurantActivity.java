@@ -1,5 +1,6 @@
 package com.example.isabelmangan.blueprinttravel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,13 +15,12 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 
 public class AddRestaurantActivity extends AppCompatActivity {
 
 
-    public class Restaurant{
-        String placeid;
-    }
+
 
     private static final String TAG = "MyRestaurant";
 
@@ -44,10 +44,12 @@ public class AddRestaurantActivity extends AppCompatActivity {
                 // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName());
                 //update attraction object with placeid
-                addRestaurant.placeid = place.getId();
+                addRestaurant.placeID = place.getId();
+                addRestaurant.placeLatLng = place.getLatLng();
+                addRestaurant.placeName = place.getName().toString();
 
                 //Test placeid is correct
-                Log.d(TAG, "Place ID: " + addRestaurant.placeid);
+                Log.d(TAG, "Place ID: " + addRestaurant.placeID);
             }
 
             @Override
@@ -61,17 +63,26 @@ public class AddRestaurantActivity extends AppCompatActivity {
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(addRestaurant.placeid != null) {
-                    //TODO: Send restaurant placeid to database
 
-                    //TODO: send info back to EditTrip
+                //TODO: Send restaurant placeid to database
+                if(addRestaurant.placeID != null){
+
+                    double placeLat = addRestaurant.placeLatLng.latitude;
+                    double placelng = addRestaurant.placeLatLng.longitude;
+
+                    setResult(2, new Intent().putExtra("placeLat", placeLat)
+                            .putExtra("placeID", addRestaurant.placeID)
+                            .putExtra("placeName", addRestaurant.placeName)
+                            .putExtra("placeLng", placelng));
                     finish();
+  
                 }else{
                     for(int i = 0; i < 3; i ++){
                         Toast.makeText(getBaseContext(), "Please enter a Restaurant.",
                                 Toast.LENGTH_LONG).show();
                     }
                 }
+
 
             }
         });

@@ -148,6 +148,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                             .putExtra("placeName", addAttraction.placeName)
                             .putExtra("placeLng", placelng)
                             .putExtra("isRequired", addAttraction.isReq));
+
                     finish();
                 }else{
                     for(int i = 0; i < 3; i ++){

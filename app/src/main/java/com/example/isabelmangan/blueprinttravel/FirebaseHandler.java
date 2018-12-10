@@ -286,45 +286,6 @@ public class FirebaseHandler {
 
     }
 
-    /**
-    public static ArrayList<Attraction> getAttractionsFromDB () {
-        final ArrayList<Attraction> attrList = null;
-        db.collection("users").document(userRef).collection("trips").
-                document(tripID).collection("locations").
-                get().
-                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "--here11");
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                       // String latlng = document.getData().get("Latlng").toString();
-
-                        Log.d(TAG, "got here!");
-                        LatLng Latlng = new LatLng(5,5);
-
-                        String placeID = document.getData().get("placeID").toString();
-                        Log.d(TAG, "placeID is " + placeID);
-                        String durationString = document.getData().get("duration").toString();
-                        int duration = Integer.parseInt(durationString);
-                        Log.d(TAG, "duration is " + duration);
-                        String locationName = document.getData().get("locationName").toString();
-                        Log.d(TAG, "locationName is " + locationName);
-                        Attraction attraction =
-                                new Attraction(Latlng, placeID, duration, locationName);
-                        attrList.add(attraction);
-
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                    }
-                } else {
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
-            }
-        });
-
-        return attrList;
-    }
-     */
 
 
     /**
@@ -735,6 +696,168 @@ public class FirebaseHandler {
                         }
                     }
                 });
+    }
+
+    public void addRestaurants(Restaurant restaurant) {
+        setUpFirestore();
+        String userid = getCurrentlySignedInUser().getUid();
+        //db.collection("users").document(userRef).collection("trips")
+        //      .document(tripID).collection("locations");
+
+        GeoPoint geoPoint = new GeoPoint(restaurant.placeLatLng.latitude, restaurant.placeLatLng.longitude);
+        Restaurant currentPlace = restaurant;
+        Map<String, Object> newRestaurant = new HashMap<>();
+        newRestaurant.put("locationName", currentPlace.placeName);
+        newRestaurant.put("placeID", currentPlace.placeID);
+        newRestaurant.put("LatLng", geoPoint);
+
+
+        String tripName = currentPlace.getTripName();
+
+        getCurrentTripForRestaurant(tripName, newRestaurant);
+    }
+
+    private void getCurrentTripForRestaurant(final String tripName, final Map<String, Object> newRestaurant) {
+        setUpFirestore();
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+                                db.collection("users").document(userRef)
+                                        .collection("trips")
+                                        .whereEqualTo("tripName", tripName).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+                                                        db.collection("users").document(userRef).collection("trips")
+                                                                .document(tripID).collection("restaurants").add(newRestaurant)
+                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                    @Override
+                                                                    public void onSuccess(DocumentReference documentReference) {
+                                                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w(TAG, "Error adding document", e);
+                                                                    }
+                                                                });
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
+
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+    public void getRestaurantsForCurrentTrip(final String tripName, RestaurantCallback callback) {
+        setUpFirestore();
+        final ArrayList<Restaurant> restaurantList = new ArrayList<>();
+
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+
+                                                        db.collection("users").document(userRef).collection("trips").
+                                                                document(tripID).collection("restaurants").
+                                                                get().
+                                                                addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                                                String placeName = document.getData().get("locationName").toString();
+                                                                                //LatLng placeLatLng = document.getData().get("LatLng").toString();
+
+                                                                                GeoPoint gp = document.getGeoPoint("LatLng");
+                                                                                LatLng placeLatLng = new LatLng(gp.getLatitude(),gp.getLongitude());
+
+                                                                                String placeID = document.getData().get("placeID").toString();
+
+
+                                                                                Restaurant restaurant = new Restaurant(placeLatLng, placeID, placeName,  tripName);
+
+                                                                                restaurantList.add(restaurant);
+
+                                                                                Log.d(TAG, "inside size is : " + restaurantList.size());
+
+
+
+                                                                            }
+                                                                            callback.onCallback(restaurantList);
+
+                                                                        } else {
+                                                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                                                        }
+
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
     }
 
     /**

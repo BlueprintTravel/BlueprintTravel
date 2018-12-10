@@ -30,6 +30,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -94,6 +96,11 @@ public class RouteMapActivity extends AppCompatActivity implements
 
     static List<String> getplaces = new ArrayList();
     List<LatLng> latLngs = new ArrayList();
+    List<String> latLngsNames = new ArrayList();
+    List<LatLng> latLngsNotRequired = new ArrayList();
+    List<String> latLngsNamesNotRequired = new ArrayList();
+    LatLng LatLngsStart;
+    String LatLngsStartName;
 
 
     @Override
@@ -227,7 +234,14 @@ public class RouteMapActivity extends AppCompatActivity implements
 
                         for (int i = attr.size()-1; i >= 0; i--) {
                             DbAttractionList.add(attr.get(i));
-                            latLngs.add(attr.get(i).placeLatLng);
+                            if (attr.get(i).getIsReq() == true) {
+                                latLngs.add(attr.get(i).placeLatLng);
+                                latLngsNames.add(attr.get(i).placeName);
+                            } else {
+                                latLngsNotRequired.add(attr.get(i).placeLatLng);
+                                latLngsNamesNotRequired.add(attr.get(i).placeName);
+                            }
+
                             boolean alreadyInList = false;
                             for (int j = 0; j < attrList.size(); j++) {
                                 if (attrList.get(j).getPlaceName().equals(attr.get(i).getPlaceName())) {
@@ -452,7 +466,10 @@ public class RouteMapActivity extends AppCompatActivity implements
                                             String startLoc = startLatLng.latitude + "," + startLatLng.longitude;
                                             Log.d("emailpassword", "start location is " + startLoc);
                                             optimizedPlaces.add(0,startLoc);
-                                            latLngs.add(0, startLatLng);
+                                            LatLngsStart = startLatLng;
+                                            LatLngsStartName = startLocation.get(0).getPlaceName();
+
+
                                             Log.d("emailpassword", "my places zero is " + optimizedPlaces.get(0));
 
 
@@ -469,8 +486,39 @@ public class RouteMapActivity extends AppCompatActivity implements
 
 
                                         for (int i = 0; i < latLngs.size(); i++) {
-                                            mMap.addMarker(new MarkerOptions().position(latLngs.get(i)));
+                                            mMap.addMarker(new MarkerOptions().position(latLngs.get(i)).title(latLngsNames.get(i)).snippet("Required Attraction"));
+
                                         }
+                                        for (int i = 0; i < latLngsNotRequired.size(); i++) {
+                                            mMap.addMarker(new MarkerOptions().position(latLngsNotRequired.get(i)).title(latLngsNamesNotRequired.get(i)).snippet("Optional Attraction"));
+
+                                        }
+                                        if (LatLngsStart != null) {
+                                            //mMap.addMarker(new MarkerOptions().position(LatLngsStart).title(LatLngsStartName));
+
+                                            mMap.addMarker(new MarkerOptions().position(LatLngsStart).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(LatLngsStartName).snippet("Starting Location"));
+                                            //mMap.addCircle(new CircleOptions().position(LatLngsStart).title(LatLngsStartName));
+                                        }
+
+                                        //TODO: NEEDS TO BE CALLED HERE!
+                                        fbHandler.getRestaurantsForCurrentTrip(tripName, new RestaurantCallback() {
+
+                                            @Override
+                                            public void onCallback(ArrayList<Restaurant> restaurants) {
+                                                ArrayList<LatLng> restaurantLatLngs = new ArrayList<>();
+                                                ArrayList<String> restaurantLatLngsNames = new ArrayList<>();
+                                                for (int i = 0; i < restaurants.size(); i++) {
+                                                    restaurantLatLngs.add(restaurants.get(i).getLatLng());
+                                                    restaurantLatLngsNames.add(restaurants.get(i).getPlaceName());
+                                                }
+                                                if (restaurantLatLngs != null) {
+                                                    for (int i = 0; i < restaurantLatLngs.size(); i++) {
+                                                        mMap.addMarker(new MarkerOptions().position(restaurantLatLngs.get(i)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(restaurantLatLngsNames.get(i)).snippet("Restaurant"));
+                                                    }
+                                                }
+                                            }
+                                        });
+
                                         for (int i = 0; i < myplaces.size(); i++) {
                                             Log.d("emailpassword", "myPlaces is " + myplaces.get(i));
                                         }

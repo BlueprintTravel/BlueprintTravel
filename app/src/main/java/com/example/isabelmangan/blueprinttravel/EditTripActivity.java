@@ -145,7 +145,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         //add names from DB
 
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+
         addNamesFromDB();
+
+        addRestaurantNamesFromDB();
 
 
 
@@ -238,7 +245,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
                 }
 
-                viewAttrImagesList.add(Color.BLUE);
+
 
                 //All logic needs to happen here!
                 RecyclerView attractionsRecyclerView = findViewById(R.id.attractions_list);
@@ -256,6 +263,44 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         });
         Log.d("attractions list", "addNamesFromDB size outside is" + DbAttractionList.size());
 
+    }
+
+    public void addRestaurantNamesFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getRestaurantsForCurrentTrip(tripName, new RestaurantCallback() {
+
+            @Override
+            public void onCallback(ArrayList<Restaurant> restaurants) {
+                ArrayList<String> restaurantNamesList = new ArrayList<>();
+                for (int i = restaurants.size()-1; i >= 0; i--) {
+                    DbAttractionList.add(restaurants.get(i).getPlaceName());
+                    boolean alreadyInList = false;
+                    for (int j = 0; j < restaurantNamesList.size(); j++) {
+                        if (restaurantNamesList.get(j).equals(restaurants.get(i).getPlaceName())) {
+                            alreadyInList = true;
+                        }
+                    }
+                    if (!alreadyInList) {
+                        restaurantNamesList.add(restaurants.get(i).getPlaceName());
+                    }
+
+
+                    //viewAttrImagesList.add(request);
+
+
+
+                }
+                RecyclerView restaurantsRecyclerView = findViewById(R.id.restaurants_list);
+                LinearLayoutManager horizontalRestLayoutManager
+                        = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                restaurantsRecyclerView.setLayoutManager(horizontalRestLayoutManager);
+                restaurantsAdapter = new LocationsRecyclerViewAdapter(EditTripActivity.this, viewAttrImagesList, restaurantNamesList);
+                restaurantsAdapter.setClickListener(EditTripActivity.this);
+                restaurantsRecyclerView.setAdapter(restaurantsAdapter);
+
+
+            }
+        });
     }
 
 
@@ -282,7 +327,19 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
 
         }
+        if (requestCode == 2) {
+            String placeID = data.getStringExtra("placeID");
+            double placeLat = data.getDoubleExtra("placeLat", 0);
+            double placeLng = data.getDoubleExtra("placeLng", 0);
+            String placeName = data.getStringExtra("placeName");
+            LatLng placeLatLng = new LatLng(placeLat, placeLng);
+
+            Restaurant restaurant = new Restaurant(placeLatLng, placeID, placeName, tripName);
+            FirebaseHandler fbHander = new FirebaseHandler();
+            fbHander.addRestaurants(restaurant);
+        }
         addNamesFromDB();
+        addRestaurantNamesFromDB();
     }
 
     /**

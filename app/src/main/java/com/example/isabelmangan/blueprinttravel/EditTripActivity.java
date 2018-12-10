@@ -367,6 +367,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
+            intent.putExtra("TRIP_NAME", tripName);
             intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 2);
 

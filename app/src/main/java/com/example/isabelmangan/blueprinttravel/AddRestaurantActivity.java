@@ -16,13 +16,14 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 
 public class AddRestaurantActivity extends AppCompatActivity {
 
-
-
-
     private static final String TAG = "MyRestaurant";
+    LatLng latlng;
+    String tripName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,9 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
 
         final Restaurant addRestaurant = new Restaurant();
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
+        LatLngBounds bounds = toBounds(latlng,500);
 
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -58,6 +62,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+        autocompleteFragment.setBoundsBias(bounds);
 
         Button mAddAttractionButton = (Button) findViewById(R.id.add_restaurant_button);
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +94,14 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     }
 
-
+    public LatLngBounds toBounds(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
+    }
 
 
 

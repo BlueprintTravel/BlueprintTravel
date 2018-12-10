@@ -35,6 +35,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
     private static final String TAG = "MyAttraction";
     LatLng latlng;
+    String tripName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class AddAttractionActivity extends AppCompatActivity {
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
 
+        tripName = getIntent().getStringExtra("TRIP_NAME");
         latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
         LatLngBounds bounds = toBounds(latlng,500);
 
@@ -172,7 +174,7 @@ public class AddAttractionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EditTripActivity.class);
-                intent.putExtra("TRIP_NAME", getIntent().getStringExtra("TRIP_NAME"));
+                intent.putExtra("TRIP_NAME", tripName);
                 startActivity(intent);
 
                /*setResult(-1);

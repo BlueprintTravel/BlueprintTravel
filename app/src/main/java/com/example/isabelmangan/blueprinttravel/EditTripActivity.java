@@ -342,6 +342,9 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             FirebaseHandler fbHander = new FirebaseHandler();
             fbHander.addRestaurants(restaurant);
         }
+        if (requestCode == 3) {
+
+        }
 
         addNamesFromDB();
         addRestaurantNamesFromDB();

@@ -152,8 +152,10 @@ public class EditAttractionActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                FirebaseHandler fbHandler = new FirebaseHandler();
+                fbHandler.deleteAttractionForCurrentTrip(tripName, placeName);
+                setResult(3, new Intent());
+                finish();
             }
         });
     }

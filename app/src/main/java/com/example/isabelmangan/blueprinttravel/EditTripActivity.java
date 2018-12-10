@@ -74,8 +74,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         }
          **/
-        FirebaseHandler fbHander = new FirebaseHandler();
-        FirebaseUser currUser = fbHander.getCurrentlySignedInUser();
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
         latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
@@ -377,10 +377,33 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     @Override
     public void onItemClick(View view, int position) {
-        for(int i = 0; i < 3; i++){
-            Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
-                    + " on item position " + position, Toast.LENGTH_SHORT);
-        }
+        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
+                + " on item position " + position, Toast.LENGTH_SHORT);
+        FirebaseHandler fbHandler =  new FirebaseHandler();
+        Intent intent = new Intent(this, EditAttractionActivity.class);
+        fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
+            public void onCallback(ArrayList<Attraction> attr) {
+                for(int i = 0; i < attr.size(); i++){
+                    Log.d("DYBALA","this ATTRACTION" + attr.get(i).placeName);
+                    Log.d("DYBALA","want this"+DbAttractionList.get(position));
+                    if(attr.get(i).placeName.equals(DbAttractionList.get(position))){
+                        Attraction thisAttraction = attr.get(i);
+                        Log.d("DYBALA","FOUND ATTRACTION" + thisAttraction.placeName);
+                        intent.putExtra("calling_method","onItemClick");
+                        intent.putExtra("LAT_LNG",thisAttraction.getLatLng());
+                        intent.putExtra("PLACE_ID",thisAttraction.getPlaceID());
+                        intent.putExtra("DURATION",thisAttraction.getDuration());
+                        intent.putExtra("PLACE_NAME",thisAttraction.getPlaceName());
+                        intent.putExtra("TRIP_NAME",thisAttraction.getTripName());
+                        intent.putExtra("REQ",thisAttraction.getIsReq());
+                        intent.putExtra("TRIP_NAME", tripName);
+                        break;
+                    }
+                }
+                Log.d("DYBALA","START INTENT");
+                startActivity(intent);
+            }
+        });
     }
 
     /**

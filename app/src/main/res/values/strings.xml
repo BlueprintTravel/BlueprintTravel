@@ -66,4 +66,8 @@
     <string name="my_trips_title">My Trips</string>
     <string name="trip_loc_description">This is the city or neighborhood where your desired trip will take place.</string>
 
+    <string name="title_activity_edit_attraction">EditAttractionActivity</string>
+    <string name="edit_attraction">Edit Attraction</string>
+    <string name="curr_edit_attraction">Editing:</string>
+
 </resources>

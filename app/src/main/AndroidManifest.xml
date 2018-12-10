@@ -54,6 +54,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".EditAttractionActivity"
+            android:exported="true"
+            android:label="@string/title_activity_edit_attraction"
+            android:parentActivityName=".EditTripActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".CreateTripActivity"
             android:exported="true"
             android:label="@string/title_activity_create_trip"
@@ -93,6 +99,7 @@
             android:parentActivityName=".MapActivity"
             android:exported="true"
             android:screenOrientation="portrait"/>
+
 
     </application>
 

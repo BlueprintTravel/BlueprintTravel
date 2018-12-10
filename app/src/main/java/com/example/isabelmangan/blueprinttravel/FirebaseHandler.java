@@ -544,7 +544,6 @@ public class FirebaseHandler {
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
         //      .document(tripID).collection("locations");
-
         GeoPoint geoPoint = new GeoPoint(start.placeLatLng.latitude, start.placeLatLng.longitude);
         Attraction currentPlace = start;
         Map<String, Object> newLocation = new HashMap<>();
@@ -910,6 +909,82 @@ public class FirebaseHandler {
 
 
 
+
+    /**
+     * Edit Attraction in DB
+     */
+    public void editAttractionsForCurrentTrip(final String tripName, String attractionName, Attraction attr) {
+        setUpFirestore();
+        final ArrayList<Attraction> attrList = new ArrayList<>();
+
+        GeoPoint geoPoint = new GeoPoint(attr.placeLatLng.latitude, attr.placeLatLng.longitude);
+        Map<String, Object> EditedAttraction = new HashMap<>();
+        EditedAttraction.put("locationName", attr.placeName);
+        EditedAttraction.put("duration", attr.duration);
+        EditedAttraction.put("placeID", attr.placeID);
+        EditedAttraction.put("isRequired", attr.isReq);
+        EditedAttraction.put("LatLng", geoPoint);
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+                                                        db.collection("users").document(userRef).collection("trips")
+                                                                .document(tripID).collection("locations")
+                                                                .whereEqualTo("locationName", attractionName)
+                                                                .get()
+                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            String locationId = document.getId();
+                                                                            editAttraction(userRef, tripID, locationId, EditedAttraction );
+                                                                        }
+                                                                    }
+
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+    public void editAttraction(String userRef, String tripId, String locationId, Map<String, Object> EditedAttraction) {
+        setUpFirestore();
+        db.collection("users").document(userRef).collection("trips").document(tripId)
+                .collection("locations").document(locationId).update(EditedAttraction);
+    }
 
     /**
      * Logs the user out of firebase

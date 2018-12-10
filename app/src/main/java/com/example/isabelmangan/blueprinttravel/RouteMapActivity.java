@@ -589,7 +589,8 @@ public class RouteMapActivity extends AppCompatActivity implements
                                         Log.w("FIREMAP", Integer.toString(path.size()));
 
                                     }
-                                });
+
+                        });
 
 
 
@@ -685,7 +686,6 @@ public class RouteMapActivity extends AppCompatActivity implements
 
     public void changeUIToCreateTrip() {
         Intent intent = new Intent (this, CreateTripActivity.class);
-        //intent.putExtra("TRIP_NAME", tripName);
         startActivity(intent);
     }
 }

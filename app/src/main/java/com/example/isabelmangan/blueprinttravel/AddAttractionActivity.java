@@ -37,9 +37,9 @@ public class AddAttractionActivity extends AppCompatActivity {
 
     private static final String TAG = "MyAttraction";
     //LatLng latlng;
+
     String tripName;
     final Attraction addAttraction = new Attraction();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +51,8 @@ public class AddAttractionActivity extends AppCompatActivity {
         //Create a new attraction object
 
         tripName = getIntent().getStringExtra("TRIP_NAME");
-        //latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
-
-        //TODO DATABASE GET LATLNG
+  
         addLatLngFromDB();
-
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);

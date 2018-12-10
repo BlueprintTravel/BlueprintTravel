@@ -79,6 +79,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
         addLatLngFromDB();
+
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

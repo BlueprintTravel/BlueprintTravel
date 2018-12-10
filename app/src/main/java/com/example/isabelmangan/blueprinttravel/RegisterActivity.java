@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -102,8 +103,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             @Override
             public void onClick(View view) {
                 if(mEmailView.getText().toString().equals("") || mPasswordView.getText().toString().equals("")){
-                    Toast.makeText(getBaseContext(), "Cannot Register with no information",
-                            Toast.LENGTH_LONG).show();
+                    for (int i = 0; i < 3; i++){
+                        Toast toast = Toast.makeText(getBaseContext(), "Cannot Register with No Information",
+                                Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, 0, -550);
+                        toast.show();
+                    }
                 }else{
                     attemptSignUp();
                 }
@@ -142,8 +147,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Registration Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            for(int i = 0; i < 3; i ++){
+                                Toast toast = Toast.makeText(RegisterActivity.this, "Registration Failed",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER, 0 ,-550);
+                                toast.show();
+                            }
                             updateUI(null);
                         }
 
@@ -216,8 +225,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             focusView = mPasswordView;
             cancel = true;
         }else if(!isPasswordValid(password)) {
-            Toast.makeText(getBaseContext(), "Please enter a password with at least 4 characters.",
-                    Toast.LENGTH_LONG).show();
+            for(int i = 0; i < 3; i++){
+                Toast toast = Toast.makeText(getBaseContext(), "Please enter a password with at least 5 characters.",
+                        Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0 ,-550);
+                toast.show();
+            }
             focusView = mPasswordView;
             cancel = true;
         }
@@ -228,8 +241,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             focusView = mEmailView;
             cancel = true;
         }else if(!isEmailValid(email)){
-            Toast.makeText(getBaseContext(), "Please enter a valid email.",
-                    Toast.LENGTH_LONG).show();
+            for(int i = 0; i < 3; i++){
+                Toast toast = Toast.makeText(getBaseContext(), "Please enter a valid email address.",
+                        Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0 ,-550);
+                toast.show();
+            }
             focusView = mEmailView;
             cancel = true;
 

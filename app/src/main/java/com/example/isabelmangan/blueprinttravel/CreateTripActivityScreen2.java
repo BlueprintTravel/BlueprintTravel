@@ -37,8 +37,10 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(mTripName.getText().toString().equals("")){
-                    Toast.makeText(getBaseContext(), "Please name your trip",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Please name your trip",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else {
                     tripName = mTripName.getText().toString();
                     //TODO: trip name to database
@@ -63,6 +65,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
         Intent intent = new Intent (this, EditTripActivity.class);
         intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("TRIP_LATLNG", latlng);
         startActivity(intent);
     }
 }

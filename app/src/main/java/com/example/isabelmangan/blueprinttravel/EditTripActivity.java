@@ -2,6 +2,7 @@ package com.example.isabelmangan.blueprinttravel;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +21,14 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.GeoApiContext;
+import com.google.maps.ImageResult;
+import com.google.maps.PhotoRequest;
+import com.google.maps.PlaceDetailsRequest;
+import com.google.maps.PlacesApi;
 import com.google.maps.android.SphericalUtil;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.firestore.GeoPoint;
 
 import org.w3c.dom.Attr;
@@ -29,6 +36,8 @@ import org.w3c.dom.Attr;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.google.maps.PlaceDetailsRequest.FieldMask.OPENING_HOURS;
 
 public class EditTripActivity extends AppCompatActivity implements LocationsRecyclerViewAdapter.ItemClickListener{
 
@@ -69,8 +78,9 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
-        //LatLngBounds bounds = toBounds(getIntent().getParcelableExtra("TRIP_LATLNG"),100);
+        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
 
+        LatLngBounds bounds = toBounds(latlng,500);
 
         PlaceAutocompleteFragment autocompleteFragment;
         autocompleteFragment = (PlaceAutocompleteFragment)
@@ -101,7 +111,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             }
         });
         autocompleteFragment.setHint("Enter Starting Location of Trip");
-        //autocompleteFragment.setBoundsBias(bounds);
+        autocompleteFragment.setBoundsBias(bounds);
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -124,11 +134,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         //first check if db has any locations- add those
         //then check if new attraction is returned from add attraction
         //probably just the last item in attractions- attractions.size()-1
-        viewAttrImagesList.add(Color.BLUE);
-        viewAttrImagesList.add(Color.YELLOW);
-        viewAttrImagesList.add(Color.MAGENTA);
-        viewAttrImagesList.add(Color.RED);
-        viewAttrImagesList.add(Color.BLACK);
+
 
         //attractionNamesList.add("Chicago");
         //attractionNamesList.add("New York");
@@ -140,7 +146,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         //add names from DB
 
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+        viewAttrImagesList.add(Color.BLUE);
+
         addNamesFromDB();
+
+        addRestaurantNamesFromDB();
 
 
 
@@ -172,16 +185,20 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 if(start != null && DbAttractionList.size() > 0){
                     generateRoute();
                 }else if(start == null && DbAttractionList.size() <= 0){
-                    Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else if(start != null){
-                    Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
+                    for (int i = 0; i < 3; i++) {
                         Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
                                 Toast.LENGTH_LONG).show();
-
-
+                    }
                 }
 
             }
@@ -199,22 +216,39 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     public void addNamesFromDB() {
         FirebaseHandler fbHandler = new FirebaseHandler();
-        fbHandler.getAttractionNamesForCurrentTrip(tripName, new AttractionNamesCallback() {
+        fbHandler.getAttractionsForCurrentTrip(tripName, new AttractionsCallback() {
 
             @Override
-            public void onCallback(ArrayList<String> attrNames) {
+            public void onCallback(ArrayList<Attraction> attr) {
                 ArrayList<String> attractionNamesList = new ArrayList<>();
-                for (int i = attrNames.size()-1; i >= 0; i--) {
-                    DbAttractionList.add(attrNames.get(i));
+                for (int i = attr.size()-1; i >= 0; i--) {
+                    DbAttractionList.add(attr.get(i).getPlaceName());
                     boolean alreadyInList = false;
                     for (int j = 0; j < attractionNamesList.size(); j++) {
-                        if (attractionNamesList.get(j).equals(attrNames.get(i))) {
+                        if (attractionNamesList.get(j).equals(attr.get(i).getPlaceName())) {
                             alreadyInList = true;
                         }
                     }
                     if (!alreadyInList) {
-                        attractionNamesList.add(attrNames.get(i));
+                        attractionNamesList.add(attr.get(i).getPlaceName());
                     }
+
+                    GeoApiContext context = new GeoApiContext.Builder()
+                            .apiKey("AIzaSyBrPt88vvoPDDn_imh-RzCXl5Ha2F2LYig") //TODO: Change to our own API KEY
+                            .build();
+                    PhotoRequest request = PlacesApi.photo(context, attr.get(i).getPlaceID());
+                    request.photoReference(attr.get(i).getPlaceID());
+                    Log.d("testing123", "request is " + request);
+                    try {
+                        ImageResult pho = request.await();
+                        //viewAttrImagesList.add(pho);
+                    } catch (Exception ex){
+
+                    }
+
+                    //viewAttrImagesList.add(request);
+
+
 
                 }
 
@@ -229,11 +263,51 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 attractionsAdapter.setClickListener(EditTripActivity.this);
                 attractionsRecyclerView.setAdapter(attractionsAdapter);
 
+                //add photos
+
 
             }
         });
         Log.d("attractions list", "addNamesFromDB size outside is" + DbAttractionList.size());
 
+    }
+
+    public void addRestaurantNamesFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getRestaurantsForCurrentTrip(tripName, new RestaurantCallback() {
+
+            @Override
+            public void onCallback(ArrayList<Restaurant> restaurants) {
+                ArrayList<String> restaurantNamesList = new ArrayList<>();
+                for (int i = restaurants.size()-1; i >= 0; i--) {
+                    DbAttractionList.add(restaurants.get(i).getPlaceName());
+                    boolean alreadyInList = false;
+                    for (int j = 0; j < restaurantNamesList.size(); j++) {
+                        if (restaurantNamesList.get(j).equals(restaurants.get(i).getPlaceName())) {
+                            alreadyInList = true;
+                        }
+                    }
+                    if (!alreadyInList) {
+                        restaurantNamesList.add(restaurants.get(i).getPlaceName());
+                    }
+
+
+                    //viewAttrImagesList.add(request);
+
+
+
+                }
+                RecyclerView restaurantsRecyclerView = findViewById(R.id.restaurants_list);
+                LinearLayoutManager horizontalRestLayoutManager
+                        = new LinearLayoutManager(EditTripActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                restaurantsRecyclerView.setLayoutManager(horizontalRestLayoutManager);
+                restaurantsAdapter = new LocationsRecyclerViewAdapter(EditTripActivity.this, viewAttrImagesList, restaurantNamesList);
+                restaurantsAdapter.setClickListener(EditTripActivity.this);
+                restaurantsRecyclerView.setAdapter(restaurantsAdapter);
+
+
+            }
+        });
     }
 
 
@@ -259,8 +333,22 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             fbHander.addAttractions(attraction);
 
 
+        } else if (requestCode == -1) {
+            Toast.makeText(this, "TEST", Toast.LENGTH_LONG);
+        }
+        if (requestCode == 2) {
+            String placeID = data.getStringExtra("placeID");
+            double placeLat = data.getDoubleExtra("placeLat", 0);
+            double placeLng = data.getDoubleExtra("placeLng", 0);
+            String placeName = data.getStringExtra("placeName");
+            LatLng placeLatLng = new LatLng(placeLat, placeLng);
+
+            Restaurant restaurant = new Restaurant(placeLatLng, placeID, placeName, tripName);
+            FirebaseHandler fbHander = new FirebaseHandler();
+            fbHander.addRestaurants(restaurant);
         }
         addNamesFromDB();
+        addRestaurantNamesFromDB();
     }
 
     /**
@@ -271,12 +359,15 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
+            intent.putExtra("TRIP_NAME", tripName);
+            intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 1);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
+            intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 2);
 
             //Test to assure proper click
@@ -313,7 +404,6 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 startActivity(intent);
             }
         });
-
     }
 
     /**

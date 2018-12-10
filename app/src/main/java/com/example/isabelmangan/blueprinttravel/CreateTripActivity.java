@@ -62,8 +62,10 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
                 if(place != null){
                     updatePage(place);
                 }else{
-                    Toast.makeText(getBaseContext(), "Please select the location of your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please select the location of your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }

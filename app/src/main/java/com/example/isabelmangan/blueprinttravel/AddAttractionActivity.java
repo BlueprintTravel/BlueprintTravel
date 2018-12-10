@@ -27,14 +27,14 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 
 
 public class AddAttractionActivity extends AppCompatActivity {
 
-
-
     private static final String TAG = "MyAttraction";
-    //Attraction addAttraction;
+    LatLng latlng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,8 @@ public class AddAttractionActivity extends AppCompatActivity {
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
 
-
+        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
+        LatLngBounds bounds = toBounds(latlng,500);
 
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -73,6 +74,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+        autocompleteFragment.setBoundsBias(bounds);
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
@@ -151,16 +153,42 @@ public class AddAttractionActivity extends AppCompatActivity {
                             .putExtra("placeName", addAttraction.placeName)
                             .putExtra("placeLng", placelng)
                             .putExtra("isRequired", addAttraction.isReq));
+
                     finish();
                 }else{
-                    Toast.makeText(getBaseContext(), "Please enter an Attraction.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please enter an Attraction.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 }
 
 
             }
         });
 
+        Button mCancelAddAttrButton = (Button) findViewById(R.id.cancel_add_attr);
+        mCancelAddAttrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditTripActivity.class);
+                intent.putExtra("TRIP_NAME", getIntent().getStringExtra("TRIP_NAME"));
+                startActivity(intent);
+
+               /*setResult(-1);
+               finish();*/
+            }
+        });
+
+    }
+
+    public LatLngBounds toBounds(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
     }
 
 

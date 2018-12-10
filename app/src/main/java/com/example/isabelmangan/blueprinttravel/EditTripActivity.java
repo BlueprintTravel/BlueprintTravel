@@ -184,14 +184,20 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                 if(start != null && DbAttractionList.size() > 0){
                     generateRoute();
                 }else if(start == null && DbAttractionList.size() <= 0){
-                    Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Cannot Generate Route with no information",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else if(start != null){
-                    Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i++){
+                        Toast.makeText(getBaseContext(), "Please add Attraction(s) to your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }else{
-                    Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
-                            Toast.LENGTH_LONG).show();
+                    for (int i = 0; i < 3; i++) {
+                        Toast.makeText(getBaseContext(), "Please select a Starting Location for your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
@@ -326,6 +332,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             fbHander.addAttractions(attraction);
 
 
+        } else if (requestCode == -1) {
+            Toast.makeText(this, "TEST", Toast.LENGTH_LONG);
         }
         if (requestCode == 2) {
             String placeID = data.getStringExtra("placeID");
@@ -350,6 +358,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
+            intent.putExtra("TRIP_NAME", tripName);
             startActivityForResult(intent, 1);
 
             //Test to assure proper click
@@ -365,8 +374,10 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
-                + " on item position " + position, Toast.LENGTH_SHORT);
+        for(int i = 0; i < 3; i++){
+            Toast.makeText(this, "You clicked " + attractionsAdapter.getItem(position)
+                    + " on item position " + position, Toast.LENGTH_SHORT);
+        }
     }
 
     /**

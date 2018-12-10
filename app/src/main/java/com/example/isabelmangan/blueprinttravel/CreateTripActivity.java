@@ -59,7 +59,15 @@ public class CreateTripActivity extends FragmentActivity implements PlaceSelecti
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updatePage(place);
+                if(place != null){
+                    updatePage(place);
+                }else{
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please select the location of your trip.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+
             }
         });
 

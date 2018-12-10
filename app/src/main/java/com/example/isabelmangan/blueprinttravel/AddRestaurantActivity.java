@@ -63,6 +63,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //TODO: Send restaurant placeid to database
                 if(addRestaurant.placeID != null){
 
@@ -74,11 +75,13 @@ public class AddRestaurantActivity extends AppCompatActivity {
                             .putExtra("placeName", addRestaurant.placeName)
                             .putExtra("placeLng", placelng));
                     finish();
+  
                 }else{
-                    Toast.makeText(getBaseContext(), "Please enter an Attraction.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please enter a Restaurant.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
-                //TODO: send info back to EditTrip
 
 
             }

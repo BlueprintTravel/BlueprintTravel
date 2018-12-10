@@ -141,11 +141,13 @@ public class MyTripsActivity extends AppCompatActivity implements MyTripsRecycle
 
         // Launching the login activity
         Intent intent = new Intent(this, LoginActivity.class);
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        startActivity(intent);
-        toast.show();
+        for(int i = 0; i < 3; i++){
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "You are now logged out.\nThank you for using Blueprint Travel.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            startActivity(intent);
+            toast.show();
+        }
         finish();
     }
 }

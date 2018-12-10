@@ -151,11 +151,27 @@ public class AddAttractionActivity extends AppCompatActivity {
 
                     finish();
                 }else{
-                    Toast.makeText(getBaseContext(), "Please enter an Attraction.",
-                            Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < 3; i ++){
+                        Toast.makeText(getBaseContext(), "Please enter an Attraction.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 }
 
 
+            }
+        });
+
+        Button mCancelAddAttrButton = (Button) findViewById(R.id.cancel_add_attr);
+        mCancelAddAttrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditTripActivity.class);
+                intent.putExtra("TRIP_NAME", getIntent().getStringExtra("TRIP_NAME"));
+                startActivity(intent);
+
+               /*setResult(-1);
+               finish();*/
             }
         });
 

@@ -65,6 +65,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
         Intent intent = new Intent (this, EditTripActivity.class);
         intent.putExtra("TRIP_NAME", tripName);
+        intent.putExtra("TRIP_LATLNG", latlng);
         startActivity(intent);
     }
 }

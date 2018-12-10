@@ -30,12 +30,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.SphericalUtil;
 
+import java.util.ArrayList;
+
 
 public class AddAttractionActivity extends AppCompatActivity {
 
     private static final String TAG = "MyAttraction";
-    LatLng latlng;
+    //LatLng latlng;
     String tripName;
+    final Attraction addAttraction = new Attraction();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,38 +49,13 @@ public class AddAttractionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Create a new attraction object
-        final Attraction addAttraction = new Attraction();
 
         tripName = getIntent().getStringExtra("TRIP_NAME");
-        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
-        LatLngBounds bounds = toBounds(latlng,500);
+        //latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
 
-        //Autocomplete to get the place
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        //TODO DATABASE GET LATLNG
+        addLatLngFromDB();
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-               Log.i(TAG, "Place: " + place.getName());
-                //update attraction object with placeid
-                addAttraction.placeID = place.getId();
-                addAttraction.placeLatLng = place.getLatLng();
-                addAttraction.placeName = place.getName().toString();
-
-
-                //Test placeid is correct
-                Log.d(TAG, "Place ID: " + addAttraction.placeID);
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-        autocompleteFragment.setBoundsBias(bounds);
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);
@@ -175,6 +154,7 @@ public class AddAttractionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EditTripActivity.class);
                 intent.putExtra("TRIP_NAME", tripName);
+                //intent.putExtra("TRIP_LATLNG", latlng);
                 startActivity(intent);
 
                /*setResult(-1);
@@ -182,6 +162,49 @@ public class AddAttractionActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void addLatLngFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getLatLngFromDB(tripName, new LatLngCallback() {
+            LatLngBounds bounds;
+            @Override
+            public void onCallback(ArrayList<LatLng> locationLatLng) {
+                for (int i = 0; i < locationLatLng.size(); i++) {
+                    bounds = toBounds(locationLatLng.get(i),12000);
+                }
+
+
+                //Autocomplete to get the place
+                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        // TODO: Get info about the selected place.
+                        Log.i(TAG, "Place: " + place.getName());
+                        //update attraction object with placeid
+                        addAttraction.placeID = place.getId();
+                        addAttraction.placeLatLng = place.getLatLng();
+                        addAttraction.placeName = place.getName().toString();
+
+
+                        //Test placeid is correct
+                        Log.d(TAG, "Place ID: " + addAttraction.placeID);
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i(TAG, "An error occurred: " + status);
+                    }
+                });
+                autocompleteFragment.setBoundsBias(bounds);
+
+
+            }
+        });
     }
 
     public LatLngBounds toBounds(LatLng center, double radiusInMeters) {

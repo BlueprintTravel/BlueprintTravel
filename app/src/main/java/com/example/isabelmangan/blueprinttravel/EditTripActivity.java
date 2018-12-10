@@ -58,7 +58,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
     String userID;
     String location;
     String tripName;
-    LatLng latlng;
+    //LatLng latlng;
     Attraction start;
 
     @Override
@@ -78,9 +78,9 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
-        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
 
-        LatLngBounds bounds = toBounds(latlng,500);
+//        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
+//        LatLngBounds bounds = toBounds(latlng,500);
 
         PlaceAutocompleteFragment autocompleteFragment;
         autocompleteFragment = (PlaceAutocompleteFragment)
@@ -111,7 +111,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             }
         });
         autocompleteFragment.setHint("Enter Starting Location of Trip");
-        autocompleteFragment.setBoundsBias(bounds);
+        //autocompleteFragment.setBoundsBias(bounds);
 
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -360,14 +360,14 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
             intent.putExtra("TRIP_NAME", tripName);
-            intent.putExtra("TRIP_LATLNG", latlng);
+            //intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 1);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
-            intent.putExtra("TRIP_LATLNG", latlng);
+            //intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 2);
 
             //Test to assure proper click

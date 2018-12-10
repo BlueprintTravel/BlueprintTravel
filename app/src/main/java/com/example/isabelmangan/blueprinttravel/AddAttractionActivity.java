@@ -34,7 +34,7 @@ import com.google.maps.android.SphericalUtil;
 public class AddAttractionActivity extends AppCompatActivity {
 
     private static final String TAG = "MyAttraction";
-    LatLng latlng;
+    //LatLng latlng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,8 @@ public class AddAttractionActivity extends AppCompatActivity {
         //Create a new attraction object
         final Attraction addAttraction = new Attraction();
 
-        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
-        LatLngBounds bounds = toBounds(latlng,500);
+//        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
+//        LatLngBounds bounds = toBounds(latlng,500);
 
         //Autocomplete to get the place
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -74,7 +74,7 @@ public class AddAttractionActivity extends AppCompatActivity {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
-        autocompleteFragment.setBoundsBias(bounds);
+        //autocompleteFragment.setBoundsBias(bounds);
 
         //Initiate a Switch for required state
        final Switch simpleSwitch = (Switch) findViewById(R.id.attraction_required_toggle);

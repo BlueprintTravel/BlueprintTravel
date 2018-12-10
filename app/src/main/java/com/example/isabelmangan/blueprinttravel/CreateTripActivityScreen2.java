@@ -21,7 +21,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
     String userID;
     String location;
-    LatLng latlng;
+    //LatLng latlng;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +50,9 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
                     location = getIntent().getStringExtra("TRIP_LOCATION");
 
                     Bundle bundle = getIntent().getParcelableExtra("bundle");
-                    latlng = bundle.getParcelable("TRIP_LATLNG");
-                    Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
-                    fbHandler.addTrip(tripName, location, latlng);
+                    //latlng = bundle.getParcelable("TRIP_LATLNG");
+                    //Log.d(TAG, "location is " + location + " latlng is " + latlng + " currentuserID is " + userID + " trip name is " + tripName);
+                    //fbHandler.addTrip(tripName, location, latlng);
                     updatePage();
                 }
             }
@@ -65,7 +65,7 @@ public class CreateTripActivityScreen2 extends AppCompatActivity {
 
         Intent intent = new Intent (this, EditTripActivity.class);
         intent.putExtra("TRIP_NAME", tripName);
-        intent.putExtra("TRIP_LATLNG", latlng);
+        //intent.putExtra("TRIP_LATLNG", latlng);
         startActivity(intent);
     }
 }

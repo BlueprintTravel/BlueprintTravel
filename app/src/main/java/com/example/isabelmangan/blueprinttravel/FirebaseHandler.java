@@ -28,6 +28,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -858,6 +859,56 @@ public class FirebaseHandler {
                 });
 
     }
+
+    public void getLatLngFromDB(String tripName, LatLngCallback callback) {
+        setUpFirestore();
+        final ArrayList<LatLng> locationLatLng = new ArrayList<>() ;
+
+
+        db.collection("users")
+                .whereEqualTo("userID", getCurrentlySignedInUser().getUid()) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                userRef = document.getId();
+                                //Log.d(TAG, "------" + userRef);
+                                Log.d(TAG, "userRef is " + userRef);
+
+                                db.collection("users").document(userRef).collection("trips")
+                                        .whereEqualTo("tripName", tripName)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                                        tripID = document.getId();
+                                                        //Log.d(TAG, "------" + userRef);
+                                                        Log.d(TAG, "tripID is " + tripID);
+                                                        GeoPoint gp = document.getGeoPoint("LocationLatLng");
+                                                        LatLng location = new LatLng(gp.getLatitude(),gp.getLongitude());
+                                                        locationLatLng.add(location);
+
+
+                                                    }
+                                                    callback.onCallback(locationLatLng);
+                                                }
+
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
+
+
+
 
     /**
      * Edit Attraction in DB

@@ -78,41 +78,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         FirebaseUser currUser = fbHandler.getCurrentlySignedInUser();
         userID = currUser.getUid();
         tripName = getIntent().getStringExtra("TRIP_NAME");
-
-//        latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
-//        LatLngBounds bounds = toBounds(latlng,500);
-
-        PlaceAutocompleteFragment autocompleteFragment;
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.starting_place_autocomplete_fragment);
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                Log.i(TAG, "Place: " + place.getName());//get place details here
-
-                // TODO: Save that as first location in route algorithm -- send to database
-                String placeID = place.getId();
-                LatLng placeLatLng = place.getLatLng();
-                String placeName = place.getName().toString();
-                Boolean placeIsReq = true;
-                int placeDuration = 0;
-                String placeTripName = tripName;
-
-                start = new Attraction(placeLatLng, placeID, placeDuration, placeName, placeTripName, placeIsReq);
-                FirebaseHandler fbHandler = new FirebaseHandler();
-                fbHandler.addStartingLocationToDB(start);
-
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-        autocompleteFragment.setHint("Enter Starting Location of Trip");
-        //autocompleteFragment.setBoundsBias(bounds);
-
+        addLatLngFromDB();
         final Button addAttractionButton = findViewById(R.id.add_attraction_button);
         addAttractionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -155,21 +121,6 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
 
         addRestaurantNamesFromDB();
 
-
-
-
-
-
-
-
-        //add most recently added location- may duplicate if editing trip? prob need to add checks to that
-
-
-
-        //TODO: format better
-        // set up the Attractions RecyclerView
-
-
         // set up the Restaurants RecyclerView
         RecyclerView restaurantsRecyclerView = findViewById(R.id.restaurants_list);
         LinearLayoutManager horizontalRestLayoutManager
@@ -200,6 +151,50 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
                                 Toast.LENGTH_LONG).show();
                     }
                 }
+
+            }
+        });
+    }
+
+    public void addLatLngFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getLatLngFromDB(tripName, new LatLngCallback() {
+            LatLngBounds bounds;
+            @Override
+            public void onCallback(ArrayList<LatLng> locationLatLng) {
+                for (int i = 0; i < locationLatLng.size(); i++) {
+                    bounds = toBounds(locationLatLng.get(i),12000);
+                }
+                PlaceAutocompleteFragment autocompleteFragment;
+                autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.starting_place_autocomplete_fragment);
+                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        Log.i(TAG, "Place: " + place.getName());//get place details here
+
+                        // TODO: Save that as first location in route algorithm -- send to database
+                        String placeID = place.getId();
+                        LatLng placeLatLng = place.getLatLng();
+                        String placeName = place.getName().toString();
+                        Boolean placeIsReq = true;
+                        int placeDuration = 0;
+                        String placeTripName = tripName;
+
+                        start = new Attraction(placeLatLng, placeID, placeDuration, placeName, placeTripName, placeIsReq);
+                        FirebaseHandler fbHandler = new FirebaseHandler();
+                        fbHandler.addStartingLocationToDB(start);
+
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i(TAG, "An error occurred: " + status);
+                    }
+                });
+                autocompleteFragment.setHint("Enter Starting Location of Trip");
+                autocompleteFragment.setBoundsBias(bounds);
 
             }
         });
@@ -333,9 +328,8 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             fbHander.addAttractions(attraction);
 
 
-        } else if (requestCode == -1) {
-            Toast.makeText(this, "TEST", Toast.LENGTH_LONG);
         }
+
         if (requestCode == 2) {
             String placeID = data.getStringExtra("placeID");
             double placeLat = data.getDoubleExtra("placeLat", 0);
@@ -347,6 +341,7 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
             FirebaseHandler fbHander = new FirebaseHandler();
             fbHander.addRestaurants(restaurant);
         }
+
         addNamesFromDB();
         addRestaurantNamesFromDB();
     }
@@ -360,14 +355,13 @@ public class EditTripActivity extends AppCompatActivity implements LocationsRecy
         if (isAttrac) {
             Intent intent = new Intent(this, AddAttractionActivity.class);
             intent.putExtra("TRIP_NAME", tripName);
-            //intent.putExtra("TRIP_LATLNG", latlng);
             startActivityForResult(intent, 1);
 
             //Test to assure proper click
             Log.d("Is it an attraction? ", String.valueOf(isAttrac));
         } else {
             Intent intent = new Intent(this, AddRestaurantActivity.class);
-            //intent.putExtra("TRIP_LATLNG", latlng);
+            intent.putExtra("TRIP_NAME", tripName);
             startActivityForResult(intent, 2);
 
             //Test to assure proper click

@@ -16,13 +16,17 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
+
+import java.util.ArrayList;
 
 public class AddRestaurantActivity extends AppCompatActivity {
 
-
-
-
     private static final String TAG = "MyRestaurant";
+    LatLng latlng;
+    String tripName;
+    final Restaurant addRestaurant = new Restaurant();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,33 +35,16 @@ public class AddRestaurantActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Create a new restaurant object
 
-        final Restaurant addRestaurant = new Restaurant();
 
-        //Autocomplete to get the place
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        tripName = getIntent().getStringExtra("TRIP_NAME");
+        //latlng = getIntent().getParcelableExtra("TRIP_LATLNG");
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
-                //update attraction object with placeid
-                addRestaurant.placeID = place.getId();
-                addRestaurant.placeLatLng = place.getLatLng();
-                addRestaurant.placeName = place.getName().toString();
+        //TODO DATABASE LATLNG
+        addLatLngFromDB();
 
-                //Test placeid is correct
-                Log.d(TAG, "Place ID: " + addRestaurant.placeID);
-            }
 
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
 
         Button mAddAttractionButton = (Button) findViewById(R.id.add_restaurant_button);
         mAddAttractionButton.setOnClickListener(new View.OnClickListener() {
@@ -87,9 +74,72 @@ public class AddRestaurantActivity extends AppCompatActivity {
             }
         });
 
+        Button mCancelAddRestButton = (Button) findViewById(R.id.cancel_add_rest);
+        mCancelAddRestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditTripActivity.class);
+                intent.putExtra("TRIP_NAME", tripName);
+                //intent.putExtra("TRIP_LATLNG", latlng);
+                startActivity(intent);
+
+               /*setResult(-1);
+               finish();*/
+            }
+        });
+
     }
 
+    public void addLatLngFromDB() {
+        FirebaseHandler fbHandler = new FirebaseHandler();
+        fbHandler.getLatLngFromDB(tripName, new LatLngCallback() {
+            LatLngBounds bounds;
+            @Override
+            public void onCallback(ArrayList<LatLng> locationLatLng) {
+                for (int i = 0; i < locationLatLng.size(); i++) {
+                    bounds = toBounds(locationLatLng.get(i),12000);
+                }
 
+
+                //Autocomplete to get the place
+                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        // TODO: Get info about the selected place.
+                        Log.i(TAG, "Place: " + place.getName());
+                        //update attraction object with placeid
+                        addRestaurant.placeID = place.getId();
+                        addRestaurant.placeLatLng = place.getLatLng();
+                        addRestaurant.placeName = place.getName().toString();
+
+                        //Test placeid is correct
+                        Log.d(TAG, "Place ID: " + addRestaurant.placeID);
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i(TAG, "An error occurred: " + status);
+                    }
+                });
+                autocompleteFragment.setBoundsBias(bounds);
+
+
+            }
+        });
+    }
+
+    public LatLngBounds toBounds(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
+    }
 
 
 

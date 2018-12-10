@@ -980,7 +980,7 @@ public class FirebaseHandler {
 
     }
 
-    public void deleteAttractionForCurrentTrip(final String tripName, String attractionName, Attraction attr) {
+    public void deleteAttractionForCurrentTrip(final String tripName, String attractionName) {
         setUpFirestore();
 
         db.collection("users")

@@ -43,7 +43,6 @@ public class FirebaseHandler {
     private  FirebaseFirestore db;
     private  String tripID;
     private  String userRef = "";
-    public   boolean hasStartingLocation = false;
 
 
     /**
@@ -583,7 +582,6 @@ public class FirebaseHandler {
         String userid = getCurrentlySignedInUser().getUid();
         //db.collection("users").document(userRef).collection("trips")
         //      .document(tripID).collection("locations");
-        this.hasStartingLocation = true;
         GeoPoint geoPoint = new GeoPoint(start.placeLatLng.latitude, start.placeLatLng.longitude);
         Attraction currentPlace = start;
         Map<String, Object> newLocation = new HashMap<>();

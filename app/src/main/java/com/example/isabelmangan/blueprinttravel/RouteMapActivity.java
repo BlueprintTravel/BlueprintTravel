@@ -626,13 +626,11 @@ public class RouteMapActivity extends AppCompatActivity implements
         Log.d(TAG, "Enter Edit Trip");
         Intent intent = new Intent (this, EditTripActivity.class);
         intent.putExtra("TRIP_NAME", tripName);
-        intent.putExtra("calling_method","RouteMapOld");
         startActivity(intent);
     }
 
     public void changeUIToCreateTrip() {
         Intent intent = new Intent (this, CreateTripActivity.class);
-        intent.putExtra("calling_method","RouteMapNew" );
         startActivity(intent);
     }
 }

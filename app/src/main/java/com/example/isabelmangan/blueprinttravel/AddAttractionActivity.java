@@ -34,7 +34,7 @@ public class AddAttractionActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MyAttraction";
-    Attraction addAttraction;
+    //Attraction addAttraction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class AddAttractionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Create a new attraction object
-        addAttraction = new Attraction();
+        final Attraction addAttraction = new Attraction();
 
 
 

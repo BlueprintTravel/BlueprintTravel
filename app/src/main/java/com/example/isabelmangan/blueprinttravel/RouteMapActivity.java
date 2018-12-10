@@ -451,9 +451,9 @@ public class RouteMapActivity extends AppCompatActivity implements
                             String ll = attrList.get(0).getLatLng().latitude + "," + attrList.get(0).getLatLng().longitude;
                             optimizedPlaces.add(ll);
                         }
-                        if (optimizedPlaces.size() <= 0){
+                        /**if (optimizedPlaces.size() <= 0){
                             Toast.makeText(RouteMapActivity.this, "No route found", Toast.LENGTH_LONG).show();
-                        }
+                        }**/
                         List<LatLng> path = new ArrayList();
 
 

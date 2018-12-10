@@ -55,7 +55,7 @@ public class EditAttractionActivity extends AppCompatActivity {
         addAttraction = new Attraction(placeLatLng,placeID,duration,placeName,tripName,isReq);
 
 
-        String headline = "Editing: " + placeName;
+        String headline = placeName;
         Log.d("DYBALA",headline);
         editAttractionTextView = (TextView)findViewById(R.id.editAttractionTextView);
         editAttractionTextView.setText(headline);
@@ -147,6 +147,15 @@ public class EditAttractionActivity extends AppCompatActivity {
             }
         });
 
+        //Add Attraction Button
+        Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
     }
 
 
